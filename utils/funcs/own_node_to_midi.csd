@@ -35,7 +35,7 @@ opcode NoteToMidi, i, S
         SNoteKind strsub Sstr, 0, 2
         String_Notes_list[] fillarray "C-","C#","D-","D#","E-","F-",
                          "F#","G-","G#","A-","A#","B-"
-        
+        ; prints SNoteKind
         itablesize = lenarray(String_Notes_list)
         i_index = 0
 
@@ -45,9 +45,9 @@ opcode NoteToMidi, i, S
             if iFound == 1 then
                 imidinote = (i_index + ioct * 12)
             endif
-            i_index += 1
  
-        loop_lt i_index, 1, itablesize, forloop
+            i_index += 1
+            loop_lt i_index, 1, itablesize, forloop
 
     endif
 
@@ -56,7 +56,6 @@ endop
 
 instr NoteTester
     Sname = p4
-    prints Sname
     ival NoteToMidi Sname
     print ival
 
@@ -67,7 +66,7 @@ endin
 
 i "NoteTester" 0 2 "D-5"
 i "NoteTester" 0 2 "D-4"
-i "NoteTester" 0 2 "D-3"
+i "NoteTester" 0 2 "D#3"
 
 </CsScore>
 </CsoundSynthesizer>
