@@ -17,8 +17,7 @@ opcode NoteToMidi, i, S
     ithru       strcmp  "...", Sstr
     iterm       strcmp  "===", Sstr
     imidinote = -5
-    Snums       init    "None"
-    Snums       strcpyk "0123456789"
+    Snums       init    "0123456789"
 
     if ithru == 1 then 
         imidinote = -2
@@ -37,7 +36,6 @@ opcode NoteToMidi, i, S
         String_Notes_list[] fillarray "C-","C#","D-","D#","E-","F-",
                          "F#","G-","G#","A-","A#","B-"
         
-        itable = 1
         itablesize = lenarray(String_Notes_list)
         i_index = 0
 
@@ -53,12 +51,13 @@ opcode NoteToMidi, i, S
 
     endif
 
-    xout int(imidinote)
+    xout imidinote
 endop 
 
 instr NoteTester
-
-    ival NoteToMidi "C-5"
+    Sname = p4
+    prints Sname
+    ival NoteToMidi Sname
     print ival
 
 endin
@@ -66,7 +65,9 @@ endin
 </CsInstruments>
 <CsScore>
 
-i "NoteTester" 0 2
+i "NoteTester" 0 2 "D-5"
+i "NoteTester" 0 2 "D-4"
+i "NoteTester" 0 2 "D-3"
 
 </CsScore>
 </CsoundSynthesizer>
