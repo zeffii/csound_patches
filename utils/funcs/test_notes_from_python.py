@@ -20,8 +20,10 @@ def to_note(note_str):
         print("unknown note")
         return -5
     else:
-        return idx + octave * 12
+        return (idx + octave * 12) + 12
     return -5
 
-for note in "C-4", "C-5", "C#5", "D-5", "D#5", "E-5", "F-5", "F#5", "G-5", "G#5":
+# notes = "C-4", "C-5", "C#5", "D-5", "D#5", "E-5", "F-5", "F#5", "G-5", "G#5", "A-5","A#5","B-5"
+notes = "E-6",
+for note in notes:
     print(to_note(note))
