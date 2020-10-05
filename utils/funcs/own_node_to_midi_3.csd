@@ -37,7 +37,8 @@ opcode NoteToMidi, i, S
      
         SNoteKind   strsub Sstr, 0, 2
 
-        ; which element in gS_notes corresponds to SNoteKind
+        ; which element in gS_notes corresponds to SNoteKind? 
+        ; csound lacks "is_item_in_array" or a "dict" to do this implicitly.
         until i_counter == lenarray(gS_notes) do
             if strcmp(SNoteKind, gS_notes[i_counter]) == 0 then 
                 i_index = i_counter
