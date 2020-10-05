@@ -19,7 +19,7 @@ opcode NoteToMidi, i, S
     iterm       strcmp  "===", Sstr
     imidinote   init    -5
     Snums       init    "0123456789"
-    i_index     init    0
+    i_index     init    -1
     i_counter   init    0
 
     if ithru == 1 then 
