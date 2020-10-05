@@ -22,9 +22,9 @@ opcode NoteToMidi, i, S
     i_index     init    -1
     i_counter   init    0
 
-    if ithru == 1 then 
+    if ithru == 0 then 
         imidinote = -2
-    elseif iterm == 1 then
+    elseif iterm == 0 then
         imidinote = -3
     else
         ; check if within supported range
