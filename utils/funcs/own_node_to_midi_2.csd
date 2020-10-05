@@ -82,7 +82,7 @@ opcode NoteToMidi, i, S
         if i_index < 0 then 
             imidinote = -5
         else
-            imidinote = i_index + ioct * 12
+            imidinote = (i_index + ioct * 12) + 12
         endif 
 
     endif
@@ -111,8 +111,10 @@ i "NoteTester" 0 2 "G-4"
 i "NoteTester" 0 2 "G#4"
 i "NoteTester" 0 2 "A-4"
 i "NoteTester" 0 2 "A#4"
+i "NoteTester" 0 2 "B-4"
 i "NoteTester" 0 2 "C-5"
-i "NoteTester" 0 2 "E-6"
+i "NoteTester" 0 2 "B-5"
+i "NoteTester" 0 2 "G-6"
 
 </CsScore>
 </CsoundSynthesizer>
