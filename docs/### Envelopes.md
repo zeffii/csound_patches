@@ -19,7 +19,7 @@ linseg:     take an arbitrary flat-list of value pairs,
 
 ```         ;           | -attack- |  --decay-- | --sustain-- |-release-|
             aEnv linseg  0, 0.01, 1,  0.1, 0.1,  p3-0.21, 0.1,   0.1, 0
-
+            aEnv linseg  0, p3/4, 0.9, p3/2, 0.9, p3/4, 0
 ```
 
 expon:
@@ -27,4 +27,15 @@ expon:
 
 
 
-expseg:
+expseg:     the subtraction lateron of .001 is because expseg can not produce values as they approach 0.
+
+```
+            kEnv expseg 0.001, p3/4, 0.901, p3/2, 0.901, p3/4, 0.001
+            kEnv = kEnv – 0.001
+```
+
+expseg-port:
+        (also requires a second anti-click envelope over the top) , maybe using `xtratim .1`
+
+cosseg:
+transeg:
