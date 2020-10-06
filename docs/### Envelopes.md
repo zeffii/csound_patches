@@ -12,10 +12,19 @@ line:       takes a start value, a duration, and an end value.
             aEnv line 0.1, 2, 1.0
 ```
 
-linen:      take a list of value pairs,
+linseg:     take an arbitrary flat-list of value pairs,
             the total length of the envelope would be the sum of all durations, but if the note length is shorter, 
             the sound is cut off before the envelope completes. keep this in mind.
+            below is linseg usage that corresponds to a more common ADSR envelope.
+
+```         ;           | -attack- |  --decay-- | --sustain-- |-release-|
+            aEnv linseg  0, 0.01, 1,  0.1, 0.1,  p3-0.21, 0.1,   0.1, 0
 
 ```
-            aEnv line start, duration, [next_value, duration, ...], end-value
-```
+
+expon:
+
+
+
+
+expseg:
