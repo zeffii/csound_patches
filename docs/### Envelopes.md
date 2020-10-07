@@ -1,4 +1,4 @@
-### Envelopes
+# Envelopes
 
 csound's envelopes
 
@@ -13,6 +13,8 @@ this is a linear interpolation
 ```
 
 ## linseg
+
+> variations of this envelope: expseg, expseg-port, cosseg, transeg
 
 Take an arbitrary flat-list of value pairs,
 the total length of the envelope would be the sum of all durations, but if the note length is shorter, 
@@ -56,7 +58,7 @@ todo
 
 -----------
 
-## Release aware envelopes
+# Release aware envelopes
 
 Envelopes with release segment are: (ending in r)
 
@@ -72,3 +74,22 @@ An envelope with a release segment, the envelope sense note-releases.
     ;            attack-|sustain-|-release
     aEnv linsegr 0, 0.01,   0.1,   0.5,0; envelope that senses note releases
 ```
+
+# Advanced loop hold envelopes.
+
+> lpshold, loopseg, looptseg
+ 
+these k-rate opcodes have looping built in, loop duration determined by a frequency. It's simpler to use these as they don't require
+extra opcodes to read from a table.
+
+## lpshold
+
+todo  (not on / off handled by this opcode)
+
+## loopseg
+
+todo
+
+## looptseg
+
+todo
