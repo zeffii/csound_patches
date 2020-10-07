@@ -23,7 +23,12 @@ linseg:     take an arbitrary flat-list of value pairs,
 ```
 
 expon:
-
+            similar to line, but this opcode produces an exponential that travels from `a` to `b` during `time`.
+```
+            aEnv expon a, time, b
+            aEnv expon start, duration, end
+            aEnv expon 1, p3, 0.0001
+```
 
 
 
