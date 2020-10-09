@@ -1,5 +1,3 @@
-; example_05E04_schroeder_reverb.csd
-
 <CsoundSynthesizer>
 <CsOptions>
 -odac -m128
@@ -133,5 +131,5 @@ i 5 0 11 1 0.12 "Room Reverb" ; start reverb
 e
 </CsScore>
 </CsoundSynthesizer>
-;example by Iain McCurdy
+; example by Iain McCurdy (original)
 ; modified by zeffii to make it a drum sequence trigger
