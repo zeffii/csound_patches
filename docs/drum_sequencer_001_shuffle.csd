@@ -26,24 +26,23 @@ endin
 
 instr SNARE 
     iAmp random 0.4, 0.5 ; amplitude randomly chosen
-    p3 = 0.3 ; define duration
+    p3 = 0.2 ; define duration
     aEnv expon 1, p3, 0.001 ; amp. envelope (percussive)
     aNse noise 1, 0 ; create noise component
-    iCps exprand 20 ; cps offset
-    kCps expon 250 + iCps, p3, 200+iCps; create tone component gliss
-    aJit randomi 0.2, 1.8, 10000 ; jitter on freq.
+    iCps exprand 40 ; cps offset
+    kCps expon 150 + iCps, p3, 100+iCps; create tone component gliss
+    aJit randomi 0.2, 1.3, 10000 ; jitter on freq.
     aTne oscil aEnv, kCps*aJit, giSine ; create tone component
     aSig sum aNse*0.1, aTne ; mix noise and tone components
-    aRes comb aSig, 0.02, 0.0035 ; comb creates a 'ring'
+    aRes comb aSig, 0.016, 0.0035 ; comb creates a 'ring'
     aSig = aRes * aEnv * iAmp ; apply env. and amp. factor
     outs aSig, aSig ; send audio to outputs
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
 endin
 
-instr CHHAT
+instr CHHAT   ; p4  = duration
     iAmp random 1.0, 1.5 ; amplitude randomly chosen
-    p3 = 0.3 ; define duration for this sound
-    aEnv expon 1,p3,0.001 ; amplitude envelope (percussive)
+    aEnv expon 1, p4, 0.001 ; amplitude envelope (percussive)
     aSig noise aEnv, 0 ; create sound for closed hi-hat
     aSig buthp aSig*0.5*iAmp, 12000 ; highpass filter sound
     aSig buthp aSig, 12000 ; -and again to sharpen cutoff
@@ -54,25 +53,32 @@ endin
 
 instr 1 ; trigger drum hits 
 
+    k_shuffle_amt init 0.0
     k_cycle_tracker init 0
     k_caret init 0
     ;.....................|           |           |           |           |
     itriggers1[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0
-    itriggers2[] fillarray 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    itriggers2[] fillarray 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1
     itriggers3[] fillarray 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0
 
     if ((k_cycle_tracker % (ksmps*5)) == 0) then
 
+        k_shuffle_amt = (k_caret % 2 == 0? 0 : 0.02)
+
         if itriggers1[k_caret] == 1 then
-            event "i", "KICK", 0, .4
+            event "i", "KICK", k_shuffle_amt, .4
         endif
 
-        if itriggers2[k_caret] == 1 then
-            event "i", "CHHAT", 0, .4
+        if itriggers2[k_caret] != 0 then
+            if itriggers2[k_caret] == 1 then
+                event "i", "CHHAT", k_shuffle_amt, .4, 0.1
+            elseif itriggers2[k_caret] == 2 then
+                event "i", "CHHAT", k_shuffle_amt, .4, 0.4
+            endif
         endif
 
         if itriggers3[k_caret] == 1 then
-            event "i", "SNARE", 0, .4
+            event "i", "SNARE", k_shuffle_amt, .4
         endif
 
         k_caret += 1
