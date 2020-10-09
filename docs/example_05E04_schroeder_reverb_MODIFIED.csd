@@ -54,10 +54,9 @@ endin
 
 instr 1 ; trigger drum hits 
 
-    Sdrums[] fillarray "KICK", "SNARE", "CHHAT"
     k_cycle_tracker init 0
     k_caret init 0
-    ;.........|           |           |           |           |
+    ;.....................|           |           |           |           |
     itriggers1[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0
     itriggers2[] fillarray 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
     itriggers3[] fillarray 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0
