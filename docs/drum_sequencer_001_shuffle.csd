@@ -24,6 +24,16 @@ instr KICK
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
 endin
 
+instr CHHAT   ; p4  = duration
+    iAmp random 1.0, 1.5 ; amplitude randomly chosen
+    aEnv expon 1, p4, 0.001 ; amplitude envelope (percussive)
+    aSig noise aEnv, 0 ; create sound for closed hi-hat
+    aSig buthp aSig*0.5*iAmp, 12000 ; highpass filter sound
+    aSig buthp aSig, 12000 ; -and again to sharpen cutoff
+    outs aSig, aSig ; send audio to outputs
+    gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
+endin
+
 instr SNARE 
     iAmp random 0.4, 0.5 ; amplitude randomly chosen
     p3 = 0.2 ; define duration
@@ -40,16 +50,28 @@ instr SNARE
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
 endin
 
-instr CHHAT   ; p4  = duration
-    iAmp random 1.0, 1.5 ; amplitude randomly chosen
-    aEnv expon 1, p4, 0.001 ; amplitude envelope (percussive)
-    aSig noise aEnv, 0 ; create sound for closed hi-hat
-    aSig buthp aSig*0.5*iAmp, 12000 ; highpass filter sound
-    aSig buthp aSig, 12000 ; -and again to sharpen cutoff
-    outs aSig, aSig ; send audio to outputs
-    gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
-endin
+instr CLAP
+    p3 = 0.12 ; define duration
+    
+    ; first clap element
+    iAmp random 1.0, 1.2 ; amplitude randomly chosen
+    aNseOne noise 1, 0 ; create noise component
+    aEnv expon 1, p3, 0.001 ; amp. envelope (percussive)
+    aSigOne = aNseOne * aEnv * iAmp ; apply env. and amp. factor
 
+    ; second clap element
+    iAmpTwo random 0.5, 1.2 ; amplitude randomly chosen
+    aNseTwo noise 1, 0 ; create noise component
+    aEnvTwo expon 1, 0.03, 0.001 ; amp. envelope (percussive)
+    aSigTwo = aNseTwo * aEnvTwo * iAmpTwo ; apply env. and amp. factor
+    aSigTwo delay aSigTwo, 0.02
+
+    aSig sum aSigOne, aSigTwo
+    aSig /= 2
+    
+    outs aSig, aSig ; send audio to outputs
+    gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
+endin
 
 instr 1 ; trigger drum hits 
 
@@ -78,7 +100,7 @@ instr 1 ; trigger drum hits
         endif
 
         if itriggers3[k_caret] == 1 then
-            event "i", "SNARE", k_shuffle_amt, .4
+            event "i", "CLAP", k_shuffle_amt, .4
         endif
 
         k_caret += 1
