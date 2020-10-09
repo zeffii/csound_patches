@@ -35,22 +35,6 @@ instr CHHAT   ; p4  = duration
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
 endin
 
-instr SNARE 
-    iAmp random 0.4, 0.5 ; amplitude randomly chosen
-    p3 = 0.2 ; define duration
-    aEnv expon 1, p3, 0.001 ; amp. envelope (percussive)
-    aNse noise 1, 0 ; create noise component
-    iCps exprand 40 ; cps offset
-    kCps expon 150 + iCps, p3, 100+iCps; create tone component gliss
-    aJit randomi 0.2, 1.3, 10000 ; jitter on freq.
-    aTne oscil aEnv, kCps*aJit, giSine ; create tone component
-    aSig sum aNse*0.1, aTne ; mix noise and tone components
-    aRes comb aSig, 0.016, 0.0035 ; comb creates a 'ring'
-    aSig = aRes * aEnv * iAmp ; apply env. and amp. factor
-    outs aSig, aSig ; send audio to outputs
-    gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
-endin
-
 opcode clap_segment, a, ii;  duration, delay
     iduration, idelay xin
     iAmp random 1.0, 1.2 ; amplitude randomly chosen
@@ -144,7 +128,7 @@ endin
 <CsScore>
 ; room reverb
 i 1 0 10 ; start drum machine trigger instr
-i 5 0 11 1 0.2 "Room Reverb" ; start reverb
+i 5 0 11 1 0.12 "Room Reverb" ; start reverb
 
 e
 </CsScore>
