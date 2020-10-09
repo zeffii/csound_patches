@@ -72,22 +72,26 @@ instr 1 ; trigger drum hits
     if ((k_cycle_tracker % (ksmps*5)) == 0) then
 
         k_shuffle_amt = (k_caret % 2 == 0 ? 0 : 0.02)
+        k_kick_trigger = itriggers1[k_caret]
+        k_hats_trigger = itriggers2[k_caret]
+        k_clap_trigger = itriggers3[k_caret]
 
-        if itriggers1[k_caret] == 1 then
+        if k_kick_trigger == 1 then
             event "i", "KICK", k_shuffle_amt, .4
         endif
 
-        if itriggers2[k_caret] != 0 then
-            if itriggers2[k_caret] == 1 then
-                event "i", "CHHAT", k_shuffle_amt, .4, 0.1
-            elseif itriggers2[k_caret] == 2 then
-                event "i", "CHHAT", k_shuffle_amt, .4, 0.4
-            endif
+
+        if k_hats_trigger == 1 then
+            event "i", "CHHAT", k_shuffle_amt, .4, 0.1
+        elseif k_hats_trigger == 2 then
+            event "i", "CHHAT", k_shuffle_amt, .4, 0.4
         endif
 
-        if itriggers3[k_caret] == 1 then
+
+        if k_clap_trigger == 1 then
             event "i", "CLAP", k_shuffle_amt, .4
         endif
+
 
         k_caret += 1
         if k_caret >= 16 then
