@@ -30,6 +30,7 @@ instr CHHAT   ; p4  = duration
     aSig noise aEnv, 0 ; create sound for closed hi-hat
     aSig buthp aSig*0.5*iAmp, 12000 ; highpass filter sound
     aSig buthp aSig, 12000 ; -and again to sharpen cutoff
+    aSig *= 1.2
     outs aSig, aSig ; send audio to outputs
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
 endin
@@ -50,24 +51,27 @@ instr SNARE
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
 endin
 
-instr CLAP
-    p3 = 0.12 ; define duration
-    
-    ; first clap element
+opcode clap_segment, a, ii;  duration, delay
+    iduration, idelay xin
     iAmp random 1.0, 1.2 ; amplitude randomly chosen
-    aNseOne noise 1, 0 ; create noise component
-    aEnv expon 1, p3, 0.001 ; amp. envelope (percussive)
-    aSigOne = aNseOne * aEnv * iAmp ; apply env. and amp. factor
+    aNse noise 1, 0 ; create noise component
+    aEnv expon 1, iduration, 0.001 ; amp. envelope (percussive)
+    aSig = aNse * aEnv * iAmp ; apply env. and amp. factor
+    if idelay > 0.0 then
+        aSig delay aSig, idelay
+    endif
+    xout aSig
+endop
 
-    ; second clap element
-    iAmpTwo random 0.5, 1.2 ; amplitude randomly chosen
-    aNseTwo noise 1, 0 ; create noise component
-    aEnvTwo expon 1, 0.03, 0.001 ; amp. envelope (percussive)
-    aSigTwo = aNseTwo * aEnvTwo * iAmpTwo ; apply env. and amp. factor
-    aSigTwo delay aSigTwo, 0.02
 
-    aSig sum aSigOne, aSigTwo
-    aSig /= 2
+instr CLAP
+    aSig1 clap_segment .17, 0
+    aSig2 clap_segment .03, 0.02
+    aSig3 clap_segment .034, 0.04
+    aSig4 clap_segment .03, 0.05
+    aSig5 clap_segment .12, 0.0601
+    aSig sum aSig1, aSig2, aSig3, aSig4, aSig5
+    aSig *= .4
     
     outs aSig, aSig ; send audio to outputs
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
@@ -81,7 +85,7 @@ instr 1 ; trigger drum hits
     ;.....................|           |           |           |           |
     itriggers1[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0
     itriggers2[] fillarray 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1
-    itriggers3[] fillarray 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0
+    itriggers3[] fillarray 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1
 
     if ((k_cycle_tracker % (ksmps*5)) == 0) then
 
