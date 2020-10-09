@@ -63,7 +63,7 @@ instr 1 ; trigger drum hits
 
     if ((k_cycle_tracker % (ksmps*5)) == 0) then
 
-        k_shuffle_amt = (k_caret % 2 == 0? 0 : 0.02)
+        k_shuffle_amt = (k_caret % 2 == 0 ? 0 : 0.02)
 
         if itriggers1[k_caret] == 1 then
             event "i", "KICK", k_shuffle_amt, .4
