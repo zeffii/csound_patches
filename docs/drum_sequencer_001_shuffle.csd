@@ -47,13 +47,26 @@ endop
 
 
 instr CLAP
-    aSig1 clap_segment .17, 0
-    aSig2 clap_segment .03, 0.02
-    aSig3 clap_segment .034, 0.04
-    aSig4 clap_segment .03, 0.05
-    aSig5 clap_segment .12, 0.0601
-    aSig sum aSig1, aSig2, aSig3, aSig4, aSig5
-    aSig *= .4
+    if p4 == 1 then
+        aSig1 clap_segment .17, 0
+        aSig2 clap_segment .03, 0.02
+        aSig3 clap_segment .034, 0.04
+        aSig4 clap_segment .03, 0.05
+        aSig5 clap_segment .16, 0.0601
+        aSig sum aSig1, aSig2, aSig3, aSig4, aSig5
+        aSig buthp aSig, 20
+        aSig *= .4
+    elseif p4 == 2 then
+        prints "should happen"
+        Sfile = "Clap.wav"
+        ifilchnls filenchnls Sfile
+        if ifilchnls == 1 then ;mono
+            aSig soundin Sfile
+        else ;stereo
+            aSig, aSig2 soundin Sfile
+        endif
+
+    endif
     
     outs aSig, aSig ; send audio to outputs
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
@@ -67,7 +80,7 @@ instr 1 ; trigger drum hits
     ;.....................|           |           |           |           |
     itriggers1[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0
     itriggers2[] fillarray 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1
-    itriggers3[] fillarray 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1
+    itriggers3[] fillarray 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2
 
     if ((k_cycle_tracker % (ksmps*5)) == 0) then
 
@@ -88,8 +101,8 @@ instr 1 ; trigger drum hits
         endif
 
 
-        if k_clap_trigger == 1 then
-            event "i", "CLAP", k_shuffle_amt, .4
+        if k_clap_trigger != 0 then
+            event "i", "CLAP", k_shuffle_amt, .4, k_clap_trigger
         endif
 
 
@@ -137,3 +150,20 @@ e
 </CsoundSynthesizer>
 ; example by Iain McCurdy (original)
 ; modified by zeffii to make it a drum sequence trigger
+<bsbPanel>
+ <label>Widgets</label>
+ <objectName/>
+ <x>0</x>
+ <y>0</y>
+ <width>0</width>
+ <height>0</height>
+ <visible>true</visible>
+ <uuid/>
+ <bgcolor mode="nobackground">
+  <r>255</r>
+  <g>255</g>
+  <b>255</b>
+ </bgcolor>
+</bsbPanel>
+<bsbPresets>
+</bsbPresets>
