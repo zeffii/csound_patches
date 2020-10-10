@@ -15,6 +15,17 @@ gaRvbSend       init 0 ; global audio variable initialized
 giRvbSendAmt    init 0.4 ; reverb send amount (range 0 - 1)
 giTanh          ftgen 2,0,257,"tanh",-10,10,0
 
+opcode update_caret, k, kk
+    k_caret, k_mod xin
+
+    k_caret += 1
+    if k_caret >= k_mod then
+        k_caret = 0
+    endif
+
+    xout k_caret
+endop
+
 
 instr KICK 
 
@@ -121,12 +132,51 @@ instr DRUM_MACHINE ; trigger drum hits
             event "i", "CLAP", k_shuffle_amt, .4, k_clap_trigger
         endif
 
+        k_caret update_caret k_caret, 16
 
-        k_caret += 1
-        if k_caret >= 16 then
-            k_caret = 0
+    endif
+
+    k_cycle_tracker += 1
+endin
+
+
+instr PAD
+    i_note_index = p4
+    i_duration = p5
+    i_FilterFreq = p6
+    i_FilterRes = p7
+
+    i_notes_01[] fillarray 54, 59, 62, 65
+    i_notes_02[] fillarray 54, 58, 62, 65
+    i_notes_03[] fillarray 54, 57, 64, 67
+    i_notes_04[] fillarray 52, 59, 63, 66
+
+    ; 
+    ; outs aSig, aSig ; send audio to outputs
+    ; gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
+
+endin
+
+instr SYNTH_SEQUENCER
+
+
+    k_shuffle_amt init 0.0
+    k_cycle_tracker init 0
+    k_caret init 0
+    ;.....................|           |           |           |           |
+    itriggers1[] fillarray 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0
+
+    if ((k_cycle_tracker % (ksmps*5)) == 0) then
+
+        k_shuffle_amt = (k_caret % 2 == 0 ? 0 : 0.02)
+        k_pad_trigger = itriggers1[k_caret]
+
+        if k_pad_trigger >= 0 then
+            ;                                     notes          duration   filterHz   Res
+            event "i", "PAD", k_shuffle_amt, 0.2, k_pad_trigger, .2,        600,       30
         endif
 
+        k_caret update_caret k_caret, 16
     endif
 
     k_cycle_tracker += 1
@@ -157,7 +207,8 @@ endin
 
 </CsInstruments>
 <CsScore>
-i "DRUM_MACHINE" 0 10 ; start drum machine trigger instr
+i "DRUM_MACHINE" 0 10
+i "SYNTH_SEQUENCER" 0 10
 i 5 0 11 1 0.12 "Room Reverb" ; start reverb
 e
 </CsScore>
