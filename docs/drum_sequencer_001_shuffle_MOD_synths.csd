@@ -71,6 +71,8 @@ instr CLAP
 
     elseif p4 == 2 then
 
+        ; this loads directly from disk, each time ( i think ? ) 
+        ; it's possible to load from disk once at the top and store as a table (TODO)
         Sfile = "Clap.wav"
         ifilchnls filenchnls Sfile
         if ifilchnls == 1 then ;mono
