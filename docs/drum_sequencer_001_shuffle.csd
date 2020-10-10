@@ -17,30 +17,33 @@ giTanh          ftgen 2,0,257,"tanh",-10,10,0
 
 
 instr KICK 
-    iamp random 0.5, 0.5 ; amplitude randomly chosen
-    p3 = 0.23 ; define duration for this sound
-    aenv line 1,p3,0.001 ; amplitude envelope (percussive)
-    kcps expon 260,p3,40 ; pitch glissando
-    aSig oscil aenv*0.8*iamp, kcps, giSine ; oscillator
-    aSig buthp aSig, 20
-    ; aSig distort aSig*0.8, .426, giTanh
-    ; aSig buthp aSig, 30    
-    outs aSig, aSig ; send audio to outputs
+
+    aenv line 0.6, 0.7, 0.01 ; amplitude envelope (percussive)
+    kcps expon 180, .7, 5 ; pitch glissando
+    aSig oscil aenv, kcps, giSine ; oscillator
+    aSig buthp aSig, 40
+    aSig buthp aSig, 50    
+    aSig buthp aSig, 150    
+    aSig *= 1.2
+    outs aSig, aSig
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
 endin
 
 instr CHHAT   ; p4  = duration
+
     iAmp random 1.0, 1.5 ; amplitude randomly chosen
     aEnv expon 1, p4, 0.001 ; amplitude envelope (percussive)
     aSig noise aEnv, 0 ; create sound for closed hi-hat
     aSig buthp aSig*0.5*iAmp, 12000 ; highpass filter sound
     aSig buthp aSig, 12000 ; -and again to sharpen cutoff
-    aSig *= 1.2
-    outs aSig, aSig ; send audio to outputs
+    aSig distort aSig*0.8, .326, giTanh
+    aSig *= .5
+    outs aSig, aSig
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
 endin
 
 opcode clap_segment, a, ii;  duration, delay
+
     iduration, idelay xin
     iAmp random 1.0, 1.2 ; amplitude randomly chosen
     aNse noise 1, 0 ; create noise component
@@ -82,7 +85,7 @@ instr CLAP
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
 endin
 
-instr 1 ; trigger drum hits 
+instr DRUM_MACHINE ; trigger drum hits 
 
     k_shuffle_amt init 0.0
     k_cycle_tracker init 0
@@ -152,7 +155,7 @@ endin
 </CsInstruments>
 <CsScore>
 ; room reverb
-i 1 0 10 ; start drum machine trigger instr
+i "DRUM_MACHINE" 0 10 ; start drum machine trigger instr
 i 5 0 11 1 0.12 "Room Reverb" ; start reverb
 
 e
