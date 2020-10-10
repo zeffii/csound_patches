@@ -4,20 +4,27 @@
 ; activate real time sound output and suppress note printing
 </CsOptions>
 <CsInstruments>
+
 sr = 44100
 ksmps = 32
 nchnls = 2
 0dbfs = 1
-giSine ftgen 0, 0, 2^12, 10, 1 ; a sine wave
-gaRvbSend init 0 ; global audio variable initialized
-giRvbSendAmt init 0.4 ; reverb send amount (range 0 - 1)
+
+giSine          ftgen 0, 0, 2^12, 10, 1 ; a sine wave
+gaRvbSend       init 0 ; global audio variable initialized
+giRvbSendAmt    init 0.4 ; reverb send amount (range 0 - 1)
+giTanh          ftgen 2,0,257,"tanh",-10,10,0
+
 
 instr KICK 
     iamp random 0.5, 0.5 ; amplitude randomly chosen
-    p3 = 0.3 ; define duration for this sound
+    p3 = 0.23 ; define duration for this sound
     aenv line 1,p3,0.001 ; amplitude envelope (percussive)
-    kcps expon 220,p3,20 ; pitch glissando
+    kcps expon 260,p3,40 ; pitch glissando
     aSig oscil aenv*0.8*iamp, kcps, giSine ; oscillator
+    aSig buthp aSig, 20
+    ; aSig distort aSig*0.8, .426, giTanh
+    ; aSig buthp aSig, 30    
     outs aSig, aSig ; send audio to outputs
     gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
 endin
@@ -48,6 +55,7 @@ endop
 
 instr CLAP
     if p4 == 1 then
+
         aSig1 clap_segment .17, 0
         aSig2 clap_segment .03, 0.02
         aSig3 clap_segment .034, 0.04
@@ -56,8 +64,9 @@ instr CLAP
         aSig sum aSig1, aSig2, aSig3, aSig4, aSig5
         aSig buthp aSig, 20
         aSig *= .4
+
     elseif p4 == 2 then
-        prints "should happen"
+
         Sfile = "Clap.wav"
         ifilchnls filenchnls Sfile
         if ifilchnls == 1 then ;mono
