@@ -65,6 +65,7 @@ instr CLAP
         else ;stereo
             aSig, aSig2 soundin Sfile
         endif
+        aSig *= .4
 
     endif
     
