@@ -142,14 +142,14 @@ endin
 opcode pad_voice, a, ii
     i_note, i_duration xin
 
-    icps    mtof i_note
+    icps    mtof i_note-12
     iwave   init 1  ; sawtooth
     kpw     init 0.5
     ifn     init 1
     
     aEnv    expon 1, i_duration, 0.001 ; amplitude envelope (percussive)
     aSig    vco aEnv, icps, iwave, kpw, ifn
-    aSig *= .2
+    aSig *= .8
 
     xout aSig
 endop
