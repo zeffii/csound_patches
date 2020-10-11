@@ -37,7 +37,7 @@ instr KICK
     aSig buthp aSig, 150    
     aSig *= 1.2
     outs aSig, aSig
-    gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
+
 endin
 
 instr CHHAT   ; p4  = duration
@@ -50,7 +50,7 @@ instr CHHAT   ; p4  = duration
     aSig distort aSig*0.8, .326, giTanh
     aSig *= .5
     outs aSig, aSig
-    gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt) ; add to send
+
 endin
 
 opcode clap_segment, a, ii;  duration, delay
@@ -91,12 +91,11 @@ instr CLAP
         else ;stereo
             aSig, aSig2 soundin Sfile
         endif
-        aSig *= .4
+        aSig *= .3
 
     endif
     
     outs aSig, aSig ; send audio to outputs
-    gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
 endin
 
 instr DRUM_MACHINE ; trigger drum hits 
@@ -205,18 +204,16 @@ instr PAD
 
 
     aSig /= i_num_notes
-
+    ; aSig buthp aSig, i_FilterFreq
+    aSig moogladder aSig, i_FilterFreq, i_FilterRes
 
     ; aPan     lfo       0.5, 1, 1      ; panning controlled by an lfo
     ; aPanL   =  sin((aPan + 0.5) * $M_PI_2)
     ; aPanR   =  cos((aPan + 0.5) * $M_PI_2)
     outs aSig, aSig ; send audio to outputs
-    gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send   
-    
 endin
 
 instr SYNTH_SEQUENCER
-
 
     k_shuffle_amt init 0.0
     k_cycle_tracker init 0
@@ -230,8 +227,8 @@ instr SYNTH_SEQUENCER
         k_pad_trigger = itriggers1[k_caret]
 
         if k_pad_trigger > 0 then
-            ;                                     notes          duration   filterHz   Res
-            event "i", "PAD", k_shuffle_amt, 0.2, k_pad_trigger, .9,        600,       30
+            ;                                     notes          duration   filterHz                    Res
+            event "i", "PAD", k_shuffle_amt, 1.6, k_pad_trigger, 1.5,       200 + random:k(1500, 800),  .8
         endif
 
         k_caret update_caret k_caret, 16
@@ -241,34 +238,13 @@ instr SYNTH_SEQUENCER
 endin
 
 
-instr 5 ; schroeder reverb - always on
-    ; read in variables from the score
-    kRvt = p4
-    kMix = p5
-    ; print some information about current settings gleaned from the score
-    prints "Type:"
-    prints p6
-    prints "\\nReverb Time:%2.1f\\nDry/Wet Mix:%2.1f\\n\\n",p4,p5
-    ; four parallel comb filters
-    a1 comb gaRvbSend, kRvt, 0.0297; comb filter 1
-    a2 comb gaRvbSend, kRvt, 0.0371; comb filter 2
-    a3 comb gaRvbSend, kRvt, 0.0411; comb filter 3
-    a4 comb gaRvbSend, kRvt, 0.0437; comb filter 4
-    asum sum a1,a2,a3,a4 ; sum (mix) the outputs of all comb filters
-    ; two allpass filters in series
-    a5 alpass asum, 0.1, 0.005 ; send mix through first allpass filter
-    aOut alpass a5, 0.1, 0.02291 ; send 1st allpass through 2nd allpass
-    amix ntrpol gaRvbSend, aOut, kMix ; create a dry/wet mix
-    outs amix, amix ; send audio to outputs
-    clear gaRvbSend ; clear global audio variable
-endin
 
 </CsInstruments>
 <CsScore>
 f 1 0 65536 10 1
 i "DRUM_MACHINE" 0 10
 i "SYNTH_SEQUENCER" 0 10
-i 5 0 11 1 0.12 "Room Reverb" ; start reverb
+
 e
 </CsScore>
 </CsoundSynthesizer>
