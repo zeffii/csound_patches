@@ -122,9 +122,9 @@ instr DRUM_MACHINE ; trigger drum hits
 
 
         if k_hats_trigger == 1 then
-            event "i", "CHHAT", k_shuffle_amt, .4, 0.1
+            event "i", "CHHAT", k_shuffle_amt, .4, 0.07
         elseif k_hats_trigger == 2 then
-            event "i", "CHHAT", k_shuffle_amt, .4, 0.4
+            event "i", "CHHAT", k_shuffle_amt, .4, 0.3
         endif
 
 
@@ -140,21 +140,66 @@ instr DRUM_MACHINE ; trigger drum hits
 endin
 
 
+opcode pad_voice, a, ii
+    i_note, i_duration xin
+
+    icps    mtof i_note
+    iwave   init 1  ; sawtooth
+    kpw     init 0.5
+    ifn     init 1
+    
+    aEnv    expon 1, i_duration, 0.001 ; amplitude envelope (percussive)
+    aSig    vco aEnv, icps, iwave, kpw, ifn
+    aSig *= .2
+
+    xout aSig
+
+endop
+
 instr PAD
-    i_note_index = p4
+    i_notearray_index = p4
     i_duration = p5
     i_FilterFreq = p6
     i_FilterRes = p7
 
-    i_notes_01[] fillarray 54, 59, 62, 65
-    i_notes_02[] fillarray 54, 58, 62, 65
-    i_notes_03[] fillarray 54, 57, 64, 67
-    i_notes_04[] fillarray 52, 59, 63, 66
+    i_notes_01[] fillarray 60, 63, 65, 68
+    ;i_notes_02[] fillarray 54, 58, 62, 65
+    ;i_notes_03[] fillarray 54, 57, 64, 67
+    ;i_notes_04[] fillarray 52, 59, 63, 66
 
-    ; 
-    ; outs aSig, aSig ; send audio to outputs
-    ; gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send
+    aSig init 0
 
+    /*
+    until i_note_index == i_num_notes do
+        i_note = i_notes_01[i_note_index]
+
+        aNewVoice   pad_voice i_note, i_duration
+        aSig += aNewVoice
+        i_note_index += 1
+    od
+    */
+
+    aNewVoice   pad_voice 60, i_duration
+    aSig += aNewVoice
+
+    aNewVoice2   pad_voice 63, i_duration
+    aSig += aNewVoice2
+
+    aNewVoice2   pad_voice 65, i_duration
+    aSig += aNewVoice2
+
+    aNewVoice2   pad_voice 68, i_duration
+    aSig += aNewVoice2
+
+    aSig /= 4
+
+
+    ; aPan     lfo       0.5, 1, 1      ; panning controlled by an lfo
+    ; aPanL   =  sin((aPan + 0.5) * $M_PI_2)
+    ; aPanR   =  cos((aPan + 0.5) * $M_PI_2)
+    outs aSig, aSig ; send audio to outputs
+    gaRvbSend = gaRvbSend + (aSig * giRvbSendAmt); add to send   
+    
 endin
 
 instr SYNTH_SEQUENCER
@@ -171,9 +216,9 @@ instr SYNTH_SEQUENCER
         k_shuffle_amt = (k_caret % 2 == 0 ? 0 : 0.02)
         k_pad_trigger = itriggers1[k_caret]
 
-        if k_pad_trigger >= 0 then
+        if k_pad_trigger > 0 then
             ;                                     notes          duration   filterHz   Res
-            event "i", "PAD", k_shuffle_amt, 0.2, k_pad_trigger, .2,        600,       30
+            event "i", "PAD", k_shuffle_amt, 0.2, k_pad_trigger, .9,        600,       30
         endif
 
         k_caret update_caret k_caret, 16
@@ -207,6 +252,7 @@ endin
 
 </CsInstruments>
 <CsScore>
+f 1 0 65536 10 1
 i "DRUM_MACHINE" 0 10
 i "SYNTH_SEQUENCER" 0 10
 i 5 0 11 1 0.12 "Room Reverb" ; start reverb
