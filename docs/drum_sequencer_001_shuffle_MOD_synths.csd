@@ -153,7 +153,6 @@ opcode pad_voice, a, ii
     aSig *= .2
 
     xout aSig
-
 endop
 
 instr PAD
@@ -162,36 +161,50 @@ instr PAD
     i_FilterFreq = p6
     i_FilterRes = p7
 
-    i_notes_01[] fillarray 60, 63, 65, 68
-    ;i_notes_02[] fillarray 54, 58, 62, 65
-    ;i_notes_03[] fillarray 54, 57, 64, 67
-    ;i_notes_04[] fillarray 52, 59, 63, 66
-
     aSig init 0
 
-    /*
-    until i_note_index == i_num_notes do
-        i_note = i_notes_01[i_note_index]
+    if i_notearray_index == 1 then
+        i_notes[] fillarray 60, 63, 65, 68
+    elseif i_notearray_index == 2 then
+        i_notes[] fillarray 60, 64, 65, 69
+    endif
 
-        aNewVoice   pad_voice i_note, i_duration
+    i_num_notes = lenarray(i_notes)
+
+    ; HARD CODING 6 NOTE POLYPHONY
+
+    if 0 < i_num_notes then
+        aNewVoice   pad_voice i_notes[0], i_duration
         aSig += aNewVoice
-        i_note_index += 1
-    od
-    */
+    endif
 
-    aNewVoice   pad_voice 60, i_duration
-    aSig += aNewVoice
+    if 1 < i_num_notes then
+        aNewVoice   pad_voice i_notes[1], i_duration
+        aSig += aNewVoice
+    endif
 
-    aNewVoice2   pad_voice 63, i_duration
-    aSig += aNewVoice2
+    if 2 < i_num_notes then
+        aNewVoice   pad_voice i_notes[2], i_duration
+        aSig += aNewVoice
+    endif
 
-    aNewVoice2   pad_voice 65, i_duration
-    aSig += aNewVoice2
+    if 3 < i_num_notes then
+        aNewVoice   pad_voice i_notes[3], i_duration
+        aSig += aNewVoice
+    endif
 
-    aNewVoice2   pad_voice 68, i_duration
-    aSig += aNewVoice2
+    if 4 < i_num_notes then
+        aNewVoice   pad_voice i_notes[4], i_duration
+        aSig += aNewVoice
+    endif
 
-    aSig /= 4
+    if 5 < i_num_notes then
+        aNewVoice   pad_voice i_notes[5], i_duration
+        aSig += aNewVoice
+    endif
+
+
+    aSig /= i_num_notes
 
 
     ; aPan     lfo       0.5, 1, 1      ; panning controlled by an lfo
@@ -209,7 +222,7 @@ instr SYNTH_SEQUENCER
     k_cycle_tracker init 0
     k_caret init 0
     ;.....................|           |           |           |           |
-    itriggers1[] fillarray 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0
+    itriggers1[] fillarray 1, 0, 0, 1, 0, 0, 1, 0, 0, 2, 0, 0, 1, 0, 1, 2
 
     if ((k_cycle_tracker % (ksmps*5)) == 0) then
 
