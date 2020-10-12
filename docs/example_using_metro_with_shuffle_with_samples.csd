@@ -10,28 +10,32 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
-;gS_sample1 = "my_sample.wav"
+gSKickPath = ".\\samples\\kick_able_boom_001.wav"
 ;varname           ifn  itime  isize igen  Sfilnam      iskip iformat ichn
-;giSample  ftgen   0,   0,     0,    1,    gS_sample1, 0,    0,      0
+giKick  ftgen   0,   0,     0,    1,    gSKickPath, 0,    0,      0
 
 
 giTanh    ftgen   2,0,257,"tanh",-10,10,0
 
-/*
-p3 filelen gS_sample1 ;play whole length of the sound file
-aSamp poscil3 .5, 1/p3, giSample
+instr KICK_WAV
 
-*/
+    i_sample_len filelen gSKickPath ;play whole length of the sound file
+    aEnv expon 1, 0.8, 0.001
+    aSig poscil3 .5, 1/i_sample_len, giKick
+    aSig *= aEnv
+    outs aSig, aSig
+
+endin
 
 
 instr CHHAT   ; p4  = duration
 
     if p4 == 1 then
-        iduration = .07
+        iduration = .05
     elseif p4 == 2 then
-        iduration = .10
+        iduration = .09
     elseif p4 == 3 then
-        iduration = .19
+        iduration = .33
     else
         iduration = .9
     endif
@@ -48,11 +52,14 @@ instr CHHAT   ; p4  = duration
 endin
 
 instr Sequencer
+    
+    ktrig metro 9.7
+
     k_event_delay init 0
     k_shuffle_max = 0.020
 
     itriggers[] fillarray 1, 2, 3, 2, 1, 2, 3, 2, 1, 2, 3, 2, 1, 3, 2, 3
-    ktrig metro 9.7
+    itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
     k_counter init 0
     k_trig_value init 0
@@ -63,6 +70,11 @@ instr Sequencer
         if itriggers[k_counter] > 0 then
             event "i", "CHHAT", k_event_delay, 1.2, itriggers[k_counter]
         endif
+
+        if itrigkick[k_counter] > 0 then
+            event "i", "KICK_WAV", k_event_delay, 1.0
+        endif
+
 
         k_counter += 1
 
