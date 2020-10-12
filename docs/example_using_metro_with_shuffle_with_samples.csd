@@ -10,11 +10,24 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
+giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
+
+gSClap_p1 = ".\\samples\\clap_p1.wav"
+gSClap_p2 = ".\\samples\\clap_p2.wav"
+gSClap_p3 = ".\\samples\\clap_p3.wav"
+gSClap_p4 = ".\\samples\\clap_p4.wav"
+gSClap_p5 = ".\\samples\\clap_p5.wav"
+;varname        ifn  itime  isize igen  Sfilnam     iskip iformat ichn
+giCl_p1  ftgen  0,   0,     0,    1,    gSClap_p1,  0,    0,      0
+giCl_p2  ftgen  0,   0,     0,    1,    gSClap_p2,  0,    0,      0
+giCl_p3  ftgen  0,   0,     0,    1,    gSClap_p3,  0,    0,      0
+giCl_p4  ftgen  0,   0,     0,    1,    gSClap_p4,  0,    0,      0
+giCl_p5  ftgen  0,   0,     0,    1,    gSClap_p5,  0,    0,      0
+
 gSKickPath = ".\\samples\\kick_able_boom_001.wav"
 ;varname        ifn  itime  isize igen  Sfilnam     iskip iformat ichn
 giKick  ftgen   0,   0,     0,    1,    gSKickPath, 0,    0,      0
 
-giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
 
 
 instr KICK_WAV
@@ -27,6 +40,37 @@ instr KICK_WAV
     ; aSig distort aSig*0.8, .326, giTanh
     aSig *= aEnv
     outs aSig, aSig
+
+endin
+
+
+opcode clap_segment, a, iii;  duration, delay
+
+    iduration, idelay, isegment xin
+    iAmp random 1.0, 1.2 ; amplitude randomly chosen
+    aNse noise 1, 0 ; create noise component
+    aEnv expon 1, iduration, 0.001 ; amp. envelope (percussive)
+    aSig = aNse * aEnv * iAmp ; apply env. and amp. factor
+    if idelay > 0.0 then
+        aSig delay aSig, idelay
+    endif
+    xout aSig
+endop
+
+
+instr CLAP
+
+    ;                  duration            trigger time              segment
+    aSig1 clap_segment .17,                0,                        1
+    aSig2 clap_segment random:i(.025,.03), 0.02,                     2
+    aSig3 clap_segment .034,               0.04,                     3
+    aSig4 clap_segment .03,                0.05,                     4
+    aSig5 clap_segment random:i(.4, .16),  random:i(0.0601, 0.053),  5
+    aSig sum aSig1, aSig2, aSig3, aSig4, aSig5
+    aSig buthp aSig, 20
+    aSig *= .4
+
+    outs aSig, aSig ; send audio to output
 
 endin
 
@@ -58,14 +102,14 @@ instr Sequencer
     
     ktrig metro 9.7
 
+    k_counter init 0
+    k2_counter init 0
     k_event_delay init 0
     k_shuffle_max = 0.020
 
     itriggers[] fillarray 1, 2, 3, 2, 1, 2, 3, 2, 1, 2, 3, 2, 1, 3, 2, 3
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
-    k_counter init 0
-    k_trig_value init 0
     if ktrig == 1 then
         
         k_event_delay = (k_counter % 2 == 0 ? 0 : k_shuffle_max)
@@ -78,12 +122,20 @@ instr Sequencer
             event "i", "KICK_WAV", k_event_delay, 1.0
         endif
 
+        if k2_counter % 3 == 0 then
+            event "i", "CLAP", k_event_delay, 1.0
+        endif
 
         k_counter += 1
+        k2_counter +=1
 
         /*  reset the counter to keep the numbers lower */
         if k_counter > 15 then
             k_counter = 0
+        endif
+
+        if k2_counter > 31 then
+            k2_counter = 0
         endif
 
     endif
