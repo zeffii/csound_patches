@@ -10,11 +10,19 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
-; varname         ifn  itime  isize igen  Sfilnam      iskip iformat ichn
-;giFile    ftgen   0,   0,     0,    1,   "myfile.wav", 0,    0,      0
+;gS_sample1 = "my_sample.wav"
+;varname           ifn  itime  isize igen  Sfilnam      iskip iformat ichn
+;giSample  ftgen   0,   0,     0,    1,    gS_sample1, 0,    0,      0
 
 
 giTanh    ftgen   2,0,257,"tanh",-10,10,0
+
+/*
+p3 filelen gS_sample1 ;play whole length of the sound file
+aSamp poscil3 .5, 1/p3, giSample
+
+*/
+
 
 instr CHHAT   ; p4  = duration
 
