@@ -10,7 +10,11 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
-giTanh          ftgen 2,0,257,"tanh",-10,10,0
+; varname         ifn  itime  isize igen  Sfilnam      iskip iformat ichn
+;giFile    ftgen   0,   0,     0,    1,   "myfile.wav", 0,    0,      0
+
+
+giTanh    ftgen   2,0,257,"tanh",-10,10,0
 
 instr CHHAT   ; p4  = duration
 
