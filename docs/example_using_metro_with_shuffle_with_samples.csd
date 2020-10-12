@@ -11,19 +11,20 @@ ksmps = 32
 0dbfs = 1
 
 gSKickPath = ".\\samples\\kick_able_boom_001.wav"
-;varname           ifn  itime  isize igen  Sfilnam      iskip iformat ichn
+;varname        ifn  itime  isize igen  Sfilnam     iskip iformat ichn
 giKick  ftgen   0,   0,     0,    1,    gSKickPath, 0,    0,      0
 
+giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
 
-giTanh    ftgen   2,0,257,"tanh",-10,10,0
 
 instr KICK_WAV
 
     i_offset = 0.0
     i_sample_len filelen gSKickPath ;play whole length of the sound file
-    
+
     aEnv expon 1, 0.7, 0.001
     aSig poscil3 .5, 1/i_sample_len, giKick, i_offset
+    ; aSig distort aSig*0.8, .326, giTanh
     aSig *= aEnv
     outs aSig, aSig
 
