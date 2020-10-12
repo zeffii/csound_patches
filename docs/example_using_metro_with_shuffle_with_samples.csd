@@ -22,8 +22,8 @@ instr KICK_WAV
     i_offset = 0.0
     i_sample_len filelen gSKickPath ;play whole length of the sound file
 
-    aEnv expon 1, 0.7, 0.001
-    aSig poscil3 .5, 1/i_sample_len, giKick, i_offset
+    aEnv expon 1, 0.5, 0.001
+    aSig poscil3 .7, 1/i_sample_len, giKick, i_offset
     ; aSig distort aSig*0.8, .326, giTanh
     aSig *= aEnv
     outs aSig, aSig
