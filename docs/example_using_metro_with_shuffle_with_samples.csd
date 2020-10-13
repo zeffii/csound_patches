@@ -32,7 +32,7 @@ giKick  ftgen   0,   0,     0,    1,    gSKickPath, 0,    0,      0
 
 instr KICK_WAV
 
-    i_offset = 0.0
+    i_offset = 0.0001
     i_sample_len filelen gSKickPath ;play whole length of the sound file
 
     aEnv expon 1, 0.5, 0.001
@@ -54,7 +54,7 @@ opcode clap_segment, a, iii;  duration, delay
 
     aSig init 0
     aEnv expon 1, iduration, 0.001
-    iAmp = 1.0
+    iAmp = .4
 
     if isegment == 1 then
         i_sample_len filelen gSClap_p1
@@ -85,11 +85,11 @@ endop
 instr CLAP
 
     ;                  duration            trigger time              segment
-    aSig1 clap_segment .17,                0,                        1
+    aSig1 clap_segment .18,                0,                        1
     aSig2 clap_segment random:i(.025,.03), 0.02,                     2
-    aSig3 clap_segment .04,                0.04,                     3
-    aSig4 clap_segment .04,                0.05,                     4
-    aSig5 clap_segment random:i(.8, .36),  random:i(0.0601, 0.053),  5
+    aSig3 clap_segment .14,                0.04,                     3
+    aSig4 clap_segment .24,                0.05,                     4
+    aSig5 clap_segment random:i(.9, .46),  random:i(0.0601, 0.053),  5
     aSig sum aSig1, aSig2, aSig3, aSig4, aSig5
     aSig buthp aSig, 20
     aSig *= .4
@@ -117,7 +117,7 @@ instr CHHAT   ; p4  = duration
     aSig buthp aSig*0.3*iAmp, 12000
     aSig buthp aSig, 2000
     aSig distort aSig*0.8, .326, giTanh
-    aSig *= .5
+    aSig *= .7
     outs aSig, aSig
 
 endin
@@ -143,7 +143,7 @@ instr Sequencer
         endif
 
         if itrigkick[k_counter] > 0 then
-            event "i", "KICK_WAV", k_event_delay, 1.0
+            event "i", "KICK_WAV", k_event_delay, 1.9
         endif
 
         if k2_counter % 3 == 0 then
