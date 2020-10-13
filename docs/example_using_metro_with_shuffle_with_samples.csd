@@ -12,21 +12,23 @@ ksmps = 32
 
 giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
 
+gSKickPath = ".\\samples\\kick_able_boom_001.wav"
+gSHat     = ".\\samples\\HHODA.WAV"
 gSClap_p1 = ".\\samples\\clap_p1.wav"
 gSClap_p2 = ".\\samples\\clap_p2.wav"
 gSClap_p3 = ".\\samples\\clap_p3.wav"
 gSClap_p4 = ".\\samples\\clap_p4.wav"
 gSClap_p5 = ".\\samples\\clap_p5.wav"
+
 ;varname        ifn  itime  isize igen  Sfilnam     iskip iformat ichn
+giKick   ftgen  0,   0,     0,    1,    gSKickPath, 0,    0,      0
+giHat    ftgen  0,   0,     0,    1,    gSHat,      0,    0,      0
 giCl_p1  ftgen  0,   0,     0,    1,    gSClap_p1,  0,    0,      0
 giCl_p2  ftgen  0,   0,     0,    1,    gSClap_p2,  0,    0,      0
 giCl_p3  ftgen  0,   0,     0,    1,    gSClap_p3,  0,    0,      0
 giCl_p4  ftgen  0,   0,     0,    1,    gSClap_p4,  0,    0,      0
 giCl_p5  ftgen  0,   0,     0,    1,    gSClap_p5,  0,    0,      0
 
-gSKickPath = ".\\samples\\kick_able_boom_001.wav"
-;varname        ifn  itime  isize igen  Sfilnam     iskip iformat ichn
-giKick  ftgen   0,   0,     0,    1,    gSKickPath, 0,    0,      0
 
 
 
@@ -111,13 +113,18 @@ instr CHHAT   ; p4  = duration
         iduration = .9
     endif
 
-    iAmp random 1.0, 1.5
+    ; iAmp random 1.0, 1.5
+    ; aEnv expon 1, iduration, 0.001
+    ; aSig noise aEnv, 0
+    ; aSig buthp aSig*0.3*iAmp, 12000
+    ; aSig buthp aSig, 2000
+    ; aSig distort aSig*0.8, .326, giTanh
+
+    i_sample_len filelen gSHat ;play whole length of the sound file
+
     aEnv expon 1, iduration, 0.001
-    aSig noise aEnv, 0
-    aSig buthp aSig*0.3*iAmp, 12000
-    aSig buthp aSig, 2000
-    aSig distort aSig*0.8, .326, giTanh
-    aSig *= .7
+    aSig poscil3 .7, 1/i_sample_len, giHat
+    aSig *= (aEnv * .7)
     outs aSig, aSig
 
 endin
