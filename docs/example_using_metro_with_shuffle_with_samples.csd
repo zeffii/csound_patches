@@ -10,6 +10,8 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
+; #include "MyOpcodes.opcodes"
+
 giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
 
 gSKickPath = ".\\samples\\kick_able_boom_001.wav"
@@ -30,16 +32,16 @@ giCl_p4  ftgen  0,   0,     0,    1,    gSClap_p4,  0,    0,      0
 giCl_p5  ftgen  0,   0,     0,    1,    gSClap_p5,  0,    0,      0
 
 
-
-
 instr KICK_WAV
 
     i_offset = 0.0001
     i_sample_len filelen gSKickPath ;play whole length of the sound file
-
-    aEnv expon 1, 0.5, 0.001
-    aSig poscil3 .7, 1/i_sample_len, giKick, i_offset
-    ; aSig distort aSig*0.8, .326, giTanh
+    kcf = 200
+    aEnv expon 1, 0.4, 0.001
+    aSig poscil3 .7, (1/i_sample_len)*0.99, giKick, i_offset
+    aSig distort aSig*0.8, .326, giTanh
+    aSig moogladder aSig, kcf, 0.4 ; filter audio signa
+    aSig *= 1.6
     aSig *= aEnv
     outs aSig, aSig
 
@@ -103,8 +105,10 @@ endin
 
 instr CHHAT   ; p4  = duration
 
+    iamp = 0.7
     if p4 == 1 then
         iduration = .05
+        iamp = random:i(0, 0.3)
     elseif p4 == 2 then
         iduration = .09
     elseif p4 == 3 then
@@ -123,7 +127,7 @@ instr CHHAT   ; p4  = duration
     i_sample_len filelen gSHat ;play whole length of the sound file
 
     aEnv expon 1, iduration, 0.001
-    aSig poscil3 .7, 1/i_sample_len, giHat
+    aSig poscil3 iamp, 1/i_sample_len, giHat
     aSig *= (aEnv * .7)
     outs aSig, aSig
 
@@ -136,9 +140,9 @@ instr Sequencer
     k_counter init 0
     k2_counter init 0
     k_event_delay init 0
-    k_shuffle_max = 0.020
+    k_shuffle_max = 0.017
 
-    itriggers[] fillarray 1, 2, 3, 2, 1, 2, 3, 2, 1, 2, 3, 2, 1, 3, 2, 3
+    itriggers[] fillarray 1, 0, 3, 0, 1, 0, 3, 2, 1, 0, 3, 0, 1, 0, 3, 2
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
     if ktrig == 1 then
@@ -153,8 +157,8 @@ instr Sequencer
             event "i", "KICK_WAV", k_event_delay, 1.9
         endif
 
-        if k2_counter % 3 == 0 then
-            event "i", "CLAP", k_event_delay, 1.0
+        if k2_counter % 6 == 0 then
+            event "i", "CLAP", k_event_delay, .5
         endif
 
         k_counter += 1
@@ -172,6 +176,8 @@ instr Sequencer
     endif
 
 endin
+
+; #include "MyOpcodes.opcodes"
 
 </CsInstruments>
 <CsScore>
