@@ -31,6 +31,24 @@ giCl_p3  ftgen  0,   0,     0,    1,    gSClap_p3,  0,    0,      0
 giCl_p4  ftgen  0,   0,     0,    1,    gSClap_p4,  0,    0,      0
 giCl_p5  ftgen  0,   0,     0,    1,    gSClap_p5,  0,    0,      0
 
+gS_pattern_001 = {{
+00 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
+01 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+02 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+03 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
+04 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+05 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+06 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
+07 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+08 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+09 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
+10 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+11 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+12 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
+13 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+14 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
+15 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
+}}
 
 instr KICK_WAV
 
@@ -95,7 +113,7 @@ instr CLAP
     aSig4 clap_segment .24,                0.05,                     4
     aSig5 clap_segment random:i(.9, .46),  random:i(0.0601, 0.053),  5
     aSig sum aSig1, aSig2, aSig3, aSig4, aSig5
-    aSig buthp aSig, 20
+    aSig buthp aSig, random:i(620, 400)
     aSig *= .4
 
     outs aSig, aSig ; send audio to output
@@ -142,7 +160,7 @@ instr Sequencer
     k_event_delay init 0
     k_shuffle_max = 0.017
 
-    itriggers[] fillarray 1, 0, 3, 0, 1, 0, 3, 2, 1, 0, 3, 0, 1, 0, 3, 2
+    itriggers[] fillarray 1, 0, 3, 0, 1, 0, 3, 0, 1, 2, 3, 0, 1, 0, 3, 0
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
     if ktrig == 1 then
@@ -157,8 +175,8 @@ instr Sequencer
             event "i", "KICK_WAV", k_event_delay, 1.9
         endif
 
-        if k2_counter % 6 == 0 then
-            event "i", "CLAP", k_event_delay, .5
+        if k2_counter % 8 == 4 then
+            event "i", "CLAP", k_event_delay, .40
         endif
 
         k_counter += 1
