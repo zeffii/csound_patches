@@ -33,16 +33,19 @@ gS_pattern_001 = {{
 ;endop
 
 opcode multiline_split, S[], S
-    ;   
-    ;   multiline_split  
-    ;   :   accept -  single multiple string
-    ;   :   return -  an array of strings
-    ;
-    ;   :   this function will test if the first character in the string is a newline
-    ;   :   and remove it before doing the main text split 
-    ;
-    ;   :   
-    ;
+    /*
+       
+    multiline_split  
+    ---    warning :  expects  equal  size  splits    ----
+    
+    :   accept -  single multiple string
+    :   return -  an array of strings
+    
+    :   this function will test if the first character in the string is a newline
+    :   and remove it before doing the main text split 
+
+    */
+
     S_multiline_str xin
 
     ipos strindex S_multiline_str, "\n"
@@ -51,11 +54,20 @@ opcode multiline_split, S[], S
         S_multiline_str strsub S_multiline_str, 1
     endif
 
-    ipos strindex S_multiline_str, "\n"
-    ; prints "new ipos %d", ipos
-    
+    iFirstNewLine strindex S_multiline_str, "\n"
+    iSizeNewArray = int(strlen(S_multiline_str) / (iFirstNewLine + 1))
 
-    S_new_array[] fillarray "AAAAAA . . ... ... ", "AAAABB . . ... ... "
+    S_new_array[] init iSizeNewArray
+    i_counter = 0
+    i_substart = 0
+    i_subend = 0
+
+    while (i_counter <= iSizeNewArray-1) do
+        i_substart = int(i_counter * (iFirstNewLine+1))
+        i_subend = int(i_substart + iFirstNewLine)
+        S_new_array[i_counter] = strsub(S_multiline_str, i_substart, i_subend)
+        i_counter += 1
+    od
 
     xout S_new_array
 
@@ -64,10 +76,10 @@ endop
 instr string_tester
 
     S_rows[] multiline_split gS_pattern_001
-    prints S_rows[0]
+    prints S_rows[15]
 
-    Sdst strsub S_rows[0], 0, 1
-    prints Sdst
+    ; Sdst strsub S_rows[0], 0, 1
+    ; prints Sdst
 
 endin
 
