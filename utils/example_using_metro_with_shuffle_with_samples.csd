@@ -37,7 +37,7 @@ gS_pattern_001 = {{
 00 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
 01 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
 02 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
-03 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
+03 C-6 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
 04 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
 05 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
 06 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
@@ -54,11 +54,12 @@ gS_pattern_001 = {{
 
 instr CLAVE
 
-    aEnv    expon 1, p4, 0.001 ; amplitude envelope (percussive)
+    iFreq   mtof p5
+    aEnv    expon 1, p4, 0.001     ; amplitude envelope (percussive)
     aNoise  pinker                 ; pink noise
-    aSin    poscil 0.4, 400           ; sine oscillator
-    aLFO1   lfo 0.7, 0.6, 3          ; LFO - square (unipolar)
-    aLFO2   lfo 0.7, .3, 2          ; LFO - square (bipolar)
+    aSin    poscil 0.4, iFreq      ; sine oscillator
+    aLFO1   lfo 0.7, 0.6, 3        ; LFO - square (unipolar)
+    aLFO2   lfo 0.7, .3, 2         ; LFO - square (bipolar)
     aSig    = (aLFO1 * aNoise) + (aLFO2 * aSin)  ; crazy mixing
 
     aSigL, aSigR pan2 aSig, aLFO1-aLFO2       ; insane panning
@@ -195,7 +196,7 @@ instr Sequencer
         endif
 
         if itriggersX[k_counter] > 0 then
-            event "i", "CLAVE", k_event_delay, .5, 0.4
+            event "i", "CLAVE", k_event_delay, .5, 0.4, itriggersX[k_counter]
         endif
 
 
