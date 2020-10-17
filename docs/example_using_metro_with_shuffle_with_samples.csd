@@ -11,6 +11,7 @@ ksmps = 32
 0dbfs = 1
 
 #include ".\\opcodes\\opcode_string_multiline_split.csd"
+#include ".\\opcodes\\opcode_row_parser.csd"
 
 giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
 
@@ -49,6 +50,19 @@ gS_pattern_001 = {{
 14 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
 15 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
 }}
+
+instr CLAVE
+
+    iAmp random 1.0, 1.5 ; amplitude randomly chosen
+    aEnv expon 1, p4, 0.001 ; amplitude envelope (percussive)
+    aSig noise aEnv, 0 ; create sound for closed hi-hat
+    aSig buthp aSig*0.5*iAmp, 12000 ; highpass filter sound
+    aSig buthp aSig, 12000 ; -and again to sharpen cutoff
+    aSig distort aSig*0.8, .326, giTanh
+    aSig *= .5
+    outs aSig, aSig
+
+endin
 
 instr KICK_WAV
 
@@ -164,7 +178,8 @@ instr Sequencer
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
     S_rows[] multiline_split gS_pattern_001
-    prints S_rows[15]
+    itriggersX[] parse_rows, S_rows
+
 
     if ktrig == 1 then
         
@@ -175,12 +190,18 @@ instr Sequencer
         endif
 
         if itrigkick[k_counter] > 0 then
-            event "i", "KICK_WAV", k_event_delay, 1.9
+            event "i", "KICK_WAV", k_event_delay, .5
         endif
 
         if k2_counter % 8 == 4 then
             event "i", "CLAP", k_event_delay, .40
         endif
+
+        if itriggersX[k_counter] > 0 then
+            event "i", "CLAVE", k_event_delay, .5, 0.4
+        endif
+
+
 
         k_counter += 1
         k2_counter +=1
@@ -198,12 +219,11 @@ instr Sequencer
 
 endin
 
-; #include "MyOpcodes.opcodes"
 
 </CsInstruments>
 <CsScore>
 
-i "Sequencer" 0 10
+i "Sequencer" 0 4
 
 </CsScore>
 </CsoundSynthesizer>
