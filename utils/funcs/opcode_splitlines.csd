@@ -36,7 +36,12 @@ opcode multiline_split, S[], S
     /*
        
     multiline_split  
-    ---    warning :  expects  equal  size  splits    ----
+
+    usage:   
+
+            S_rows[] multiline_split gS_pattern_001
+    
+    info:
     
     :   accept -  single multiple string
     :   return -  an array of strings
@@ -44,6 +49,13 @@ opcode multiline_split, S[], S
     :   this function will test if the first character in the string is a newline
     :   and remove it before doing the main text split 
 
+    : known limitations
+    1. expects equal size splits
+    2. this means patterns of over 99 lines long will need to do something like
+       99 C-% ... 
+       100C-5 ...
+       effectively limiting this function to patterns of 999 lines, which is fine.
+       512 is uncomfortable already, and I can use Hex instead if 1024+ was needed
     */
 
     S_multiline_str xin
@@ -72,6 +84,7 @@ opcode multiline_split, S[], S
     xout S_new_array
 
 endop
+
 
 instr string_tester
 

@@ -10,7 +10,7 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
-; #include "MyOpcodes.opcodes"
+#include ".\\opcodes\\opcode_string_multiline_split.csd"
 
 giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
 
@@ -162,6 +162,9 @@ instr Sequencer
 
     itriggers[] fillarray 1, 0, 3, 0, 1, 0, 3, 0, 1, 2, 3, 0, 1, 0, 3, 0
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
+
+    S_rows[] multiline_split gS_pattern_001
+    prints S_rows[15]
 
     if ktrig == 1 then
         
