@@ -167,7 +167,7 @@ endin
 
 instr Sequencer
     
-    ktrig metro 9.7
+    ktrig metro 9.4
 
     k_counter init 0
     k2_counter init 0
@@ -220,8 +220,8 @@ endin
 
 </CsInstruments>
 <CsScore>
-
-i "Sequencer" 0 4
+t 0 112
+i "Sequencer" 0 12
 
 </CsScore>
 </CsoundSynthesizer>
