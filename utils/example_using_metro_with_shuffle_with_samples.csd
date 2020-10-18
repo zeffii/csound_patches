@@ -52,13 +52,15 @@ gS_pattern_001 = {{
 15 ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. .. ..
 }}
 
+gS_pattern_descriptor = {{TTTNNN VV NNN VV NNN VV NNN VV NNN VV NNN VV  AA AA AA AA AA AA}}
+
 instr CLAVE
 
     iFreq   mtof p5
     aEnv    expon 1, p4, 0.001     ; amplitude envelope (percussive)
     aNoise  pinker                 ; pink noise
     aSin    poscil 0.4, iFreq      ; sine oscillator
-    aLFO1   lfo 0.7, 0.6, 3        ; LFO - square (unipolar)
+    aLFO1   lfo 0.7, 122.6, 3        ; LFO - square (unipolar)
     aLFO2   lfo 0.7, .3, 2         ; LFO - square (bipolar)
     aSig    = (aLFO1 * aNoise) + (aLFO2 * aSin)  ; crazy mixing
 
@@ -198,8 +200,6 @@ instr Sequencer
         if itriggersX[k_counter] > 0 then
             event "i", "CLAVE", k_event_delay, .5, 0.4, itriggersX[k_counter]
         endif
-
-
 
         k_counter += 1
         k2_counter +=1
