@@ -1,4 +1,3 @@
-
 <CsoundSynthesizer>
 <CsOptions>
 -odac  ; -nm0
@@ -10,6 +9,7 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
+#include "instrument_hhat.csd"
 #include "instrument_clap.csd"
 #include "instrument_clave.csd"
 
@@ -21,11 +21,11 @@ ksmps = 32
 giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
 
 gSKickPath = ".\\samples\\kick_able_boom_001.wav"
-gSHat     = ".\\samples\\HHODA.WAV"
+
 
 ;varname        ifn  itime  isize igen  Sfilnam     iskip iformat ichn
 giKick   ftgen  0,   0,     0,    1,    gSKickPath, 0,    0,      0
-giHat    ftgen  0,   0,     0,    1,    gSHat,      0,    0,      0
+
 
 gS_pattern_001 = {{
 00 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
@@ -65,32 +65,7 @@ instr KICK_WAV
 endin
 
 
-
-
-instr CHHAT   ; p4  = duration
-
-    iamp = 0.7
-    if p4 == 1 then
-        iduration = .05
-        iamp = random:i(0, 0.3)
-    elseif p4 == 2 then
-        iduration = .09
-    elseif p4 == 3 then
-        iduration = .33
-    else
-        iduration = .9
-    endif
-
-    i_sample_len filelen gSHat ;play whole length of the sound file
-
-    aEnv expon 1, iduration, 0.001
-    aSig poscil3 iamp, 1/i_sample_len, giHat
-    aSig *= (aEnv * .7)
-    outs aSig, aSig
-
-endin
-
-instr Sequencer
+instr MSequencer
     
     ktrig metro 9.4
 
@@ -146,7 +121,7 @@ endin
 </CsInstruments>
 <CsScore>
 t 0 112
-i "Sequencer" 0 12
+i "MSequencer" 0 12
 
 </CsScore>
 </CsoundSynthesizer>
