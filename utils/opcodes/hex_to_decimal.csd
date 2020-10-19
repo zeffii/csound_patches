@@ -12,6 +12,17 @@ ksmps = 32
 0dbfs = 1
 
 opcode char_to_num, i, S
+    /*
+    input any single hex value, as a string
+    output the index equivalent  ( 0=0,...... 9=9, A=10,.. D=13, ..F=15 )
+
+    limitations, expects only the following characters "0123456789ABCDEF",
+                         ----
+    - no lowercase
+    - no newline, 
+    - etc.,
+
+    */
     S_in xin
 
     S_chars[] fillarray "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"
@@ -28,6 +39,20 @@ endop
 
 
 opcode hex_to_decimal, i, S
+    /*
+    input:  a string representation of a hexvalue, of arbitrary length
+    output:  the integer value
+
+    "FAAB -> %d\n", hex_to_decimal("FAAB")
+    FAAB -> 64171
+
+    limitations, expects only the following characters "0123456789ABCDEF",
+                         ----
+    - no lowercase
+    - no newline, 
+    - etc.,
+
+    */
 
     S_input xin
     i_num_chars strlen S_input
