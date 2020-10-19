@@ -1,4 +1,4 @@
-#include ".\\opcodes\\opcode_tnote_to_midi.csd"
+#include "opcode_tnote_to_midi.csd"
 
 opcode parse_rows, i[], S[]
 

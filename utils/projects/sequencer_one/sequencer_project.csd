@@ -10,28 +10,22 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
+#include "instrument_clap.csd"
+#include "instrument_clave.csd"
+
 #include ".\\opcodes\\opcode_string_multiline_split.csd"
 #include ".\\opcodes\\opcode_row_parser.csd"
 #include ".\\opcodes\\opcode_tnote_to_midi.csd"
+
 
 giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
 
 gSKickPath = ".\\samples\\kick_able_boom_001.wav"
 gSHat     = ".\\samples\\HHODA.WAV"
-gSClap_p1 = ".\\samples\\clap_p1.wav"
-gSClap_p2 = ".\\samples\\clap_p2.wav"
-gSClap_p3 = ".\\samples\\clap_p3.wav"
-gSClap_p4 = ".\\samples\\clap_p4.wav"
-gSClap_p5 = ".\\samples\\clap_p5.wav"
 
 ;varname        ifn  itime  isize igen  Sfilnam     iskip iformat ichn
 giKick   ftgen  0,   0,     0,    1,    gSKickPath, 0,    0,      0
 giHat    ftgen  0,   0,     0,    1,    gSHat,      0,    0,      0
-giCl_p1  ftgen  0,   0,     0,    1,    gSClap_p1,  0,    0,      0
-giCl_p2  ftgen  0,   0,     0,    1,    gSClap_p2,  0,    0,      0
-giCl_p3  ftgen  0,   0,     0,    1,    gSClap_p3,  0,    0,      0
-giCl_p4  ftgen  0,   0,     0,    1,    gSClap_p4,  0,    0,      0
-giCl_p5  ftgen  0,   0,     0,    1,    gSClap_p5,  0,    0,      0
 
 gS_pattern_001 = {{
 00 C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. .. .. ..
@@ -54,22 +48,6 @@ gS_pattern_001 = {{
 
 gS_pattern_descriptor = {{TTTNNN VV NNN VV NNN VV NNN VV NNN VV NNN VV  AA AA AA AA AA AA}}
 
-instr CLAVE
-
-    iFreq   mtof p5
-    aEnv    expon 1, p4, 0.001     ; amplitude envelope (percussive)
-    aNoise  pinker                 ; pink noise
-    aSin    poscil 0.4, iFreq      ; sine oscillator
-    aLFO1   lfo 0.7, 122.6, 3        ; LFO - square (unipolar)
-    aLFO2   lfo 0.7, .3, 2         ; LFO - square (bipolar)
-    aSig    = (aLFO1 * aNoise) + (aLFO2 * aSin)  ; crazy mixing
-
-    aSigL, aSigR pan2 aSig, aLFO1-aLFO2       ; insane panning
-
-    outs aSigL*aEnv, aSigR*aEnv             ; stereo output
-
-
-endin
 
 instr KICK_WAV
 
@@ -87,59 +65,6 @@ instr KICK_WAV
 endin
 
 
-opcode clap_segment, a, iii;  duration, delay
-
-    iduration, idelay, isegment xin
-    ; iAmp random 1.0, 1.2 ; amplitude randomly chosen
-    ; aNse noise 1, 0 ; create noise component
-    ; aEnv expon 1, iduration, 0.001 ; amp. envelope (percussive)
-    ; aSig = aNse * aEnv * iAmp ; apply env. and amp. factor
-
-    aSig init 0
-    aEnv expon 1, iduration, 0.001
-    iAmp = .4
-
-    if isegment == 1 then
-        i_sample_len filelen gSClap_p1
-        aSig poscil3 iAmp, 1/i_sample_len, giCl_p1
-    elseif isegment == 2 then
-        i_sample_len filelen gSClap_p2
-        aSig poscil3 iAmp, 1/i_sample_len, giCl_p2
-    elseif isegment == 3 then
-        i_sample_len filelen gSClap_p3
-        aSig poscil3 iAmp, 1/i_sample_len, giCl_p3
-    elseif isegment == 4 then
-        i_sample_len filelen gSClap_p4
-        aSig poscil3 iAmp, 1/i_sample_len, giCl_p4
-    elseif isegment == 5 then
-        i_sample_len filelen gSClap_p5
-        aSig poscil3 iAmp, 1/i_sample_len, giCl_p5
-    endif
-
-    aSig *= aEnv
-
-    if idelay > 0.0 then
-        aSig delay aSig, idelay
-    endif
-    xout aSig
-endop
-
-
-instr CLAP
-
-    ;                  duration            trigger time              segment
-    aSig1 clap_segment .18,                0,                        1
-    aSig2 clap_segment random:i(.025,.03), 0.02,                     2
-    aSig3 clap_segment .14,                0.04,                     3
-    aSig4 clap_segment .24,                0.05,                     4
-    aSig5 clap_segment random:i(.9, .46),  random:i(0.0601, 0.053),  5
-    aSig sum aSig1, aSig2, aSig3, aSig4, aSig5
-    aSig buthp aSig, random:i(620, 400)
-    aSig *= .4
-
-    outs aSig, aSig ; send audio to output
-
-endin
 
 
 instr CHHAT   ; p4  = duration
