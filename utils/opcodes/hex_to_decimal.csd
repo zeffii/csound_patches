@@ -1,7 +1,8 @@
+/*
 <CsoundSynthesizer>
 <CsOptions>
 ;-m0  ; -odac  ; -nm0
--odac 
+;-odac 
 -d  ; no messages
 </CsOptions>
 
@@ -10,7 +11,7 @@ sr = 44100
 nchnls = 2
 ksmps = 32
 0dbfs = 1
-
+*/
 opcode char_to_num, i, S
     /*
     input any single hex value, as a string
@@ -78,7 +79,7 @@ opcode hex_to_decimal, i, S
 
 endop
 
-
+/*
 instr test_hex
 
     prints "FAAB -> %d\n", hex_to_decimal("FAAB")
@@ -96,3 +97,4 @@ i "test_hex" 0 1
 </CsScore>
 </CsoundSynthesizer>
 
+*/
