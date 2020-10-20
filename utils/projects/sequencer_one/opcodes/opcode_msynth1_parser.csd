@@ -73,6 +73,8 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         */
 
         iTrackParams[iCounter][0] = get_note(S_temp_note1)  ; midi note
+        iTrackParams[iCounter][2] = get_note(S_temp_note2)  ; midi note
+        iTrackParams[iCounter][4] = get_note(S_temp_note3)  ; midi note
 
         iCounter += 1
     od

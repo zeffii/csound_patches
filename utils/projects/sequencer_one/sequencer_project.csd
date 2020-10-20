@@ -92,9 +92,20 @@ instr MSequencer
             event "i", "CLAP", k_event_delay, .40
         endif
 
+        ; handle msynth1
+
         if itrkParams[k_counter][0] > 0 then
             event "i", "CLAVE", k_event_delay, .5, 0.4, itrkParams[k_counter][0]
         endif
+
+        if itrkParams[k_counter][2] > 0 then
+            event "i", "CLAVE", k_event_delay, .5, 0.4, itrkParams[k_counter][2]
+        endif
+
+        if itrkParams[k_counter][4] > 0 then
+            event "i", "CLAVE", k_event_delay, .5, 0.4, itrkParams[k_counter][4]
+        endif
+
 
         k_counter += 1
         k2_counter +=1
