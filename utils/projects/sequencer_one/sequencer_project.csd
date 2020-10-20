@@ -14,8 +14,7 @@ ksmps = 32
 #include "instrument_clave.csd"
 
 #include ".\\opcodes\\opcode_string_multiline_split.csd"
-#include ".\\opcodes\\opcode_row_parser.csd"
-#include ".\\opcodes\\opcode_tnote_to_midi.csd"
+#include ".\\opcodes\\opcode_msynth1_parser.csd"
 
 
 giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
@@ -75,9 +74,7 @@ instr MSequencer
     itriggers[] fillarray 1, 0, 3, 0, 1, 0, 3, 0, 1, 2, 3, 0, 1, 0, 3, 0
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
-    S_rows[] multiline_split gS_pattern_001
-    itriggersX[] parse_rows, S_rows
-
+    iplen, itrkParams[][], iGrpParams[][] msynth1_pattern_parser gS_pattern_001
 
     if ktrig == 1 then
         
@@ -95,8 +92,8 @@ instr MSequencer
             event "i", "CLAP", k_event_delay, .40
         endif
 
-        if itriggersX[k_counter] > 0 then
-            event "i", "CLAVE", k_event_delay, .5, 0.4, itriggersX[k_counter]
+        if itrkParams[k_counter][0] > 0 then
+            event "i", "CLAVE", k_event_delay, .5, 0.4, itrkParams[k_counter][0]
         endif
 
         k_counter += 1

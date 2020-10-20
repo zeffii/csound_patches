@@ -1,5 +1,22 @@
 #include "opcode_tnote_to_midi.csd"
 
+
+opcode get_note, i, S
+    S_temp_note xin
+    ireturn = -1
+
+    S_temp_note_test = "..."
+    if strcmp(S_temp_note, S_temp_note_test) != 0 then
+        inote = NoteToMidi(S_temp_note)
+        ireturn = inote
+    else 
+        ireturn = 0
+    endif
+
+    xout ireturn
+endop
+
+
 opcode msynth1_pattern_parser, ii[][]i[][], S
     /*
 
@@ -18,15 +35,14 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
 
     */
 
-
-    S_rows[] xin
+    S_multiline xin
+    S_rows[] multiline_split S_multiline
     iLenArray lenarray S_rows
 
     iline_count = iLenArray
     iTrackParams[][] init iline_count, 12   ; 2 * 6  = (note, vol) * 6
     iGroupParams[][] init iline_count, 6    ; n group parameters.
 
-    S_temp_note_test = "..."
     iCounter = 0
 
     while iCounter < iLenArray do
@@ -45,6 +61,7 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         S_temp_vol5     strsub S_rows[iCounter], 36, 38   ;2
         S_temp_note6    strsub S_rows[iCounter], 39, 42   ;3
         S_temp_vol6     strsub S_rows[iCounter], 43, 45   ;2
+        /*
         ; -----
         i_param_a       strsub S_rows[iCounter], 47, 49   ;2
         i_param_d       strsub S_rows[iCounter], 50, 52   ;2
@@ -53,14 +70,9 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         ; ----
         i_param_Freq    strsub S_rows[iCounter], 60, 62   ;2
         i_param_Cutoff  strsub S_rows[iCounter], 63, 65   ;2
+        */
 
-
-        if strcmp(S_temp_note, S_temp_note_test) != 0 then
-            inote = NoteToMidi(S_temp_note)
-            itriggers[iCounter] = inote
-        else 
-            itriggers[iCounter] = 0
-        endif
+        iTrackParams[iCounter][0] = get_note(S_temp_note1)  ; midi note
 
         iCounter += 1
     od
