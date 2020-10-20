@@ -10,7 +10,7 @@ opcode parse_rows, i[], S[]
     iCounter = 0
     while iCounter < iLenArray do
         
-        S_temp_note strsub S_rows[iCounter], 3, 6
+        S_temp_note strsub S_rows[iCounter], 4, 7
         S_temp_note_test = "..."
 
         if strcmp(S_temp_note, S_temp_note_test) != 0 then

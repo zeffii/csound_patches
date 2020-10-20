@@ -1,9 +1,3 @@
-;<CsoundSynthesizer>
-;<CsOptions>
-;-odac  ; -nm0
-;</CsOptions>
-
-;<CsInstruments>
 
 gSHat     = ".\\samples\\HHODA.WAV"
 giHat    ftgen  0,   0,     0,    1,    gSHat,      0,    0,      0
@@ -31,13 +25,4 @@ instr CHHAT   ; p4  = duration
     outs aSig, aSig
 
 endin
-
-
-;</CsInstruments>
-;<CsScore>
-; t 0 112
-; i "Sequencer" 0 12
-
-;</CsScore>
-;</CsoundSynthesizer>
 
