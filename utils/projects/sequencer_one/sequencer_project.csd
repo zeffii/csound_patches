@@ -9,21 +9,14 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
+#include "instrument_kick.csd"
 #include "instrument_hhat.csd"
 #include "instrument_clap.csd"
 #include "instrument_clave.csd"
 
-; #include ".\\opcodes\\opcode_string_multiline_split.csd"
 #include ".\\opcodes\\opcode_msynth1_parser.csd"
 
 
-giTanh  ftgen   2, 0, 257, "tanh", -10, 10, 0
-
-gSKickPath = ".\\samples\\kick_able_boom_001.wav"
-
-
-;varname        ifn  itime  isize igen  Sfilnam     iskip iformat ichn
-giKick   ftgen  0,   0,     0,    1,    gSKickPath, 0,    0,      0
 
 
 gS_pattern_001 = {{
@@ -44,22 +37,6 @@ gS_pattern_001 = {{
 14  C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. ..  .. ..
 15  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 }}
-
-
-instr KICK_WAV
-
-    i_offset = 0.0001
-    i_sample_len filelen gSKickPath ;play whole length of the sound file
-    kcf = 200
-    aEnv expon 1, 0.4, 0.001
-    aSig poscil3 .7, (1/i_sample_len)*0.99, giKick, i_offset
-    aSig distort aSig*0.8, .326, giTanh
-    aSig moogladder aSig, kcf, 0.4 ; filter audio signa
-    aSig *= 1.6
-    aSig *= aEnv
-    outs aSig, aSig
-
-endin
 
 
 instr MSequencer
