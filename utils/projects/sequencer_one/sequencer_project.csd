@@ -42,14 +42,14 @@ gS_pattern_001 = {{
 
 instr MSequencer
     
-    ktrig metro 9.4
+    ktrig metro 9.2
 
     k_counter init 0
     k2_counter init 0
     k_event_delay init 0
     k_shuffle_max = 0.017
 
-    itriggers[] fillarray 1, 0, 3, 0, 1, 0, 3, 0, 1, 2, 3, 0, 1, 0, 3, 0
+    itriggers[] fillarray 1, 0, 2, 0, 1, 0, 2, 0, 1, 0, 2, 0, 1, 3, 2, 1
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
     iplen, itrkParams[][], iGrpParams[][] msynth1_pattern_parser gS_pattern_001

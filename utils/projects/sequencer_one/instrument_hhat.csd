@@ -12,6 +12,7 @@ instr CHHAT   ; p4  = duration
     elseif p4 == 2 then
         iduration = .09
     elseif p4 == 3 then
+        iamp = 0.5
         iduration = .33
     else
         iduration = .9

@@ -19,14 +19,20 @@ opcode get_note, i, S
     xout ireturn
 endop
 
+opcode convert_hex_range, i, SSiiS
+
+    S_max, S_min, i_max, i_min, S_val_to_convert xin
+    
+    i_outval = 0.2
+    xout i_outval
+
+endop
+
 
 opcode get_volum, i, S
     S_vol_chars xin
-    S_max_vol = "FF"
-    S_min_vol = "00"
-    i_outvol = 0.3
-
-    xout i_outvol
+    i_outval convert_hex_range, "FF", "00", 1.0, 0.0, S_vol_chars
+    xout i_outval
 endop
 
 
