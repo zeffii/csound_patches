@@ -22,19 +22,26 @@ endop
 opcode convert_hex_range, i, SSiiS
 
     S_max, S_min, i_max, i_min, S_val_to_convert xin
-    
-    i_outval = 0.2
+    i_value hex_to_decimal S_val_to_convert
+    i_hex_max hex_to_decimal S_max
+    i_hex_min hex_to_decimal S_min
+    i_outval = i_min + (i_value - i_hex_min) * (i_max - i_min) / (i_hex_max - i_hex_min)
+
     xout i_outval
 
 endop
-
 
 opcode get_volum, i, S
     S_vol_chars xin
-    i_outval convert_hex_range, "FF", "00", 1.0, 0.0, S_vol_chars
+    ; must ensure .. is handled.
+    ; i_outval convert_hex_range, "FF", "00", 1.0, 0.0, S_vol_chars
+    i_outval = 0.2
     xout i_outval
 endop
 
+opcode get_hex, S, S
+    ; some params must give an empty value ".." (use last set value!)
+endop
 
 opcode msynth1_pattern_parser, ii[][]i[][], S
     /*
@@ -67,36 +74,41 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
     while iCounter < iLenArray do
 
         ; hardcoding sucks donkeys, it's too early to optimize.
-        
-        S_temp_note1    strsub S_rows[iCounter], 4, 7     ;3
-        S_temp_vol1     strsub S_rows[iCounter], 8, 10    ;2
-        S_temp_note2    strsub S_rows[iCounter], 11, 14   ;3
-        S_temp_vol2     strsub S_rows[iCounter], 15, 17   ;2
-        S_temp_note3    strsub S_rows[iCounter], 18, 21   ;3
-        S_temp_vol3     strsub S_rows[iCounter], 22, 24   ;2
-        S_temp_note4    strsub S_rows[iCounter], 25, 28   ;3
-        S_temp_vol4     strsub S_rows[iCounter], 29, 31   ;2
-        S_temp_note5    strsub S_rows[iCounter], 32, 35   ;3
-        S_temp_vol5     strsub S_rows[iCounter], 36, 38   ;2
-        S_temp_note6    strsub S_rows[iCounter], 39, 42   ;3
-        S_temp_vol6     strsub S_rows[iCounter], 43, 45   ;2
+        ;                                                 paramwidth    index
+        S_temp_note1    strsub S_rows[iCounter], 4, 7     ;3            0
+        S_temp_vol1     strsub S_rows[iCounter], 8, 10    ;2            1
+        S_temp_note2    strsub S_rows[iCounter], 11, 14   ;3            2
+        S_temp_vol2     strsub S_rows[iCounter], 15, 17   ;2            3
+        S_temp_note3    strsub S_rows[iCounter], 18, 21   ;3            4
+        S_temp_vol3     strsub S_rows[iCounter], 22, 24   ;2            5
+        ;S_temp_note4    strsub S_rows[iCounter], 25, 28   ;3            6
+        ;S_temp_vol4     strsub S_rows[iCounter], 29, 31   ;2            7
+        ;S_temp_note5    strsub S_rows[iCounter], 32, 35   ;3            8
+        ;S_temp_vol5     strsub S_rows[iCounter], 36, 38   ;2            9
+        ;S_temp_note6    strsub S_rows[iCounter], 39, 42   ;3            10
+        ;S_temp_vol6     strsub S_rows[iCounter], 43, 45   ;2            11
         /*
         ; -----
-        i_param_a       strsub S_rows[iCounter], 47, 49   ;2
-        i_param_d       strsub S_rows[iCounter], 50, 52   ;2
-        i_param_s       strsub S_rows[iCounter], 53, 55   ;2
-        i_param_r       strsub S_rows[iCounter], 56, 58   ;2
+        i_param_a       strsub S_rows[iCounter], 47, 49   ;2            12
+        i_param_d       strsub S_rows[iCounter], 50, 52   ;2            13
+        i_param_s       strsub S_rows[iCounter], 53, 55   ;2            14
+        i_param_r       strsub S_rows[iCounter], 56, 58   ;2            15
         ; ----
-        i_param_Freq    strsub S_rows[iCounter], 60, 62   ;2
-        i_param_Cutoff  strsub S_rows[iCounter], 63, 65   ;2
         */
+        ; S_param_Freq    strsub S_rows[iCounter], 60, 62   ;2            16
+        ; S_param_Cutoff  strsub S_rows[iCounter], 63, 65   ;2            17
 
+        prints S_temp_vol1
         iTrackParams[iCounter][0] = get_note(S_temp_note1)  ; midi note
         iTrackParams[iCounter][1] = get_volum(S_temp_vol1)  ; note vol
         iTrackParams[iCounter][2] = get_note(S_temp_note2)  ; midi note
         iTrackParams[iCounter][3] = get_volum(S_temp_vol2)  ; note vol
         iTrackParams[iCounter][4] = get_note(S_temp_note3)  ; midi note
         iTrackParams[iCounter][5] = get_volum(S_temp_vol3)  ; note vol
+
+        ; filter params
+        ; iTrackParams[iCounter][16] = convert_hex_range("FF", "00", 8000.0, 0.0, S_param_Freq)
+        ; iTrackParams[iCounter][17] = convert_hex_range("FF", "00", 1.0, 0.0, S_param_Cutoff)
         
         iCounter += 1
     od
