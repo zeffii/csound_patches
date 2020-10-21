@@ -13,7 +13,7 @@ ksmps = 32
 #include "instrument_clap.csd"
 #include "instrument_clave.csd"
 
-#include ".\\opcodes\\opcode_string_multiline_split.csd"
+; #include ".\\opcodes\\opcode_string_multiline_split.csd"
 #include ".\\opcodes\\opcode_msynth1_parser.csd"
 
 
@@ -38,7 +38,7 @@ gS_pattern_001 = {{
 08  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 09  C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. ..  .. ..
 10  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-11  C-4 .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
+11  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 12  C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. ..  .. ..
 13  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 14  C-5 80 D#5 80 G-5 80 ... .. ... .. ... ..  .. .. .. ..  .. ..
@@ -92,19 +92,24 @@ instr MSequencer
             event "i", "CLAP", k_event_delay, .40
         endif
 
-        ; handle msynth1
+        ; handle msynth1 6 tracks
+        k_num_tracks_to_handle = 3
+        ktrack_num = 0
+        krow_index = 0
+        while ktrack_num < k_num_tracks_to_handle do 
+            krow_index = ktrack_num * 2
 
-        if itrkParams[k_counter][0] > 0 then
-            event "i", "CLAVE", k_event_delay, .5, 0.4, itrkParams[k_counter][0]
-        endif
+            if itrkParams[k_counter][krow_index] > 0 then
 
-        if itrkParams[k_counter][2] > 0 then
-            event "i", "CLAVE", k_event_delay, .5, 0.4, itrkParams[k_counter][2]
-        endif
+                k_note = itrkParams[k_counter][krow_index]
+                k_vol = itrkParams[k_counter][krow_index+1]
 
-        if itrkParams[k_counter][4] > 0 then
-            event "i", "CLAVE", k_event_delay, .5, 0.4, itrkParams[k_counter][4]
-        endif
+                event "i", "CLAVE", k_event_delay, .5, 0.4, k_note, k_vol
+
+            endif
+
+            ktrack_num += 1
+        od
 
 
         k_counter += 1

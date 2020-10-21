@@ -12,6 +12,7 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 */
+
 opcode char_to_num, i, S
     /*
     input any single hex value, as a string

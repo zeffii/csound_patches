@@ -1,3 +1,6 @@
+#include "hex_to_decimal.csd"
+
+#include "opcode_string_multiline_split.csd"
 #include "opcode_tnote_to_midi.csd"
 
 
@@ -14,6 +17,16 @@ opcode get_note, i, S
     endif
 
     xout ireturn
+endop
+
+
+opcode get_volum, i, S
+    S_vol_chars xin
+    S_max_vol = "FF"
+    S_min_vol = "00"
+    i_outvol = 0.3
+
+    xout i_outvol
 endop
 
 
@@ -73,9 +86,12 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         */
 
         iTrackParams[iCounter][0] = get_note(S_temp_note1)  ; midi note
+        iTrackParams[iCounter][1] = get_volum(S_temp_vol1)  ; note vol
         iTrackParams[iCounter][2] = get_note(S_temp_note2)  ; midi note
+        iTrackParams[iCounter][3] = get_volum(S_temp_vol2)  ; note vol
         iTrackParams[iCounter][4] = get_note(S_temp_note3)  ; midi note
-
+        iTrackParams[iCounter][5] = get_volum(S_temp_vol3)  ; note vol
+        
         iCounter += 1
     od
 
