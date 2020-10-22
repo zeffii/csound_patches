@@ -12,7 +12,15 @@ instr CLAVE
     aLFO2   lfo 1.0, 4.3, 2        ; LFO - square (bipolar)
     aSig    = (aLFO1 * aNoise) + (aLFO2 * aSin)  ; crazy mixing
 
-    ; aSig    moogladder   aSig, kcf, 0.9
+    /*
+    iAtt = 0.1
+    iDec = 0.4
+    iSus = 0.6
+    iRel = 0.7
+    kEnv madsr iAtt, iDec, iSus, iRel 
+    */    
+    kcf     chnget       "filterfreq"
+    aSig    moogladder   aSig, kcf, 0.9
 
     aSigL, aSigR pan2 aSig, aLFO1-aLFO2       ; insane panning
 

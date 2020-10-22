@@ -52,7 +52,7 @@ instr MSequencer
     itriggers[] fillarray 1, 0, 2, 0, 1, 0, 2, 0, 1, 0, 2, 0, 1, 3, 2, 1
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
-    iplen, itrkParams[][], iGrpParams[][] msynth1_pattern_parser gS_pattern_001
+    iplen, itrkParams[][], SgroupParams[][] msynth1_pattern_parser gS_pattern_001
 
     if ktrig == 1 then
         
@@ -70,6 +70,22 @@ instr MSequencer
             event "i", "CLAP", k_event_delay, .40
         endif
 
+        ; handle msynth1
+        Smsynth_param_freq = SgroupParams[k_counter][4]
+        ;Smsynth_param_cutoff = SgroupParams[k_counter][5]
+
+        if strcmp(Smsynth_param_freq, "..") != 0 then
+            kFreq = convert_hex_range("FF", "00", 15000.0, 300.0, Smsynth_param_freq)
+            chnset kFreq, "filterfreq"
+        endif
+
+        ;if strcmp(Smsynth_param_freq, "..") != 0 then
+        ;    kFreq = convert_hex_range("FF", "00", 8000.0, 0.0, Smsynth_param_freq)
+        ;    chnset kFreq, "filterfreq"
+        ;endif
+
+        
+        ; convert_hex_range("FF", "00", 1.0, 0.0, S_param_Cutoff)
 
         k_num_tracks_to_handle = 3
         ktrack_num = 0
@@ -85,6 +101,8 @@ instr MSequencer
             endif
             ktrack_num += 1
         od
+
+        ; end handle msynth1
 
         k_counter += 1
         k2_counter +=1
@@ -105,7 +123,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-t 0 112
+t 0 120
 i "MSequencer" 0 12
 
 </CsScore>
