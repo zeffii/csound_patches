@@ -74,10 +74,10 @@ instr MSequencer
         Smsynth_param_freq = SgroupParams[k_counter][4]
         ;Smsynth_param_cutoff = SgroupParams[k_counter][5]
 
-        if strcmp(Smsynth_param_freq, "..") != 0 then
-            kFreq = convert_hex_range("FF", "00", 15000.0, 300.0, Smsynth_param_freq)
-            chnset kFreq, "filterfreq"
-        endif
+        ;if strcmp(Smsynth_param_freq, "..") != 0 then
+        ;    kFreq = convert_hex_range("FF", "00", 15000.0, 300.0, Smsynth_param_freq)
+        ;    chnset kFreq, "filterfreq"
+        ;endif
 
         ;if strcmp(Smsynth_param_freq, "..") != 0 then
         ;    kFreq = convert_hex_range("FF", "00", 8000.0, 0.0, Smsynth_param_freq)
