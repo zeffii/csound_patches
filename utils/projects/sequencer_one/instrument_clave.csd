@@ -4,7 +4,10 @@ instr CLAVE
 
     iFreq   mtof p5
     ivol    = p6
+    ;iFreq   = p7
+    ;iRes    = p8
 
+    
     ;kcf init 6000
 
     aEnv    expon 1, p4, 0.001     ; amplitude envelope (percussive)
@@ -23,7 +26,8 @@ instr CLAVE
     */    
     ;kcf     chnget       "filterfreq"
     ;print   kcf
-    ;aSig    moogladder   aSig, kcf, 0.9
+    ; prints "%d, %d", iFreq, iRes
+    ; aSig    moogladder   aSig, iFreq, iRes
 
     aSigL, aSigR pan2 aSig, aLFO1-aLFO2       ; insane panning
 
