@@ -62,9 +62,9 @@ instr MSequencer
         
         k_event_delay = (k_counter % 2 == 0 ? 0 : k_shuffle_max)
 
-        ;if itriggers[k_counter] > 0 then
-        ;    event "i", "CHHAT", k_event_delay, 1.2, itriggers[k_counter]
-        ;endif
+        if itriggers[k_counter] > 0 then
+            event "i", "CHHAT", k_event_delay, 1.2, itriggers[k_counter]
+        endif
 
         if itrigkick[k_counter] > 0 then
             event "i", "KICK_WAV", k_event_delay, .5
@@ -92,7 +92,7 @@ instr MSequencer
             if itrkParams[k_counter][krow_index] > 0 then
                 k_note = itrkParams[k_counter][krow_index]
                 k_vol = itrkParams[k_counter][krow_index+1]
-                event "i", "CLAVE", k_event_delay, .5, 0.8, k_note, k_vol, kFreq;, SgroupParams[k_counter][4];, kRes
+                event "i", "CLAVE", k_event_delay, .5, 0.8, k_note, k_vol, kFreq
             endif
             ktrack_num += 1
         od

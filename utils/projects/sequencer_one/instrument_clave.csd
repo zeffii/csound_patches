@@ -27,6 +27,7 @@ instr CLAVE
     aSig    moogvcf   aSig, kcf, ires
 
     aSigL, aSigR pan2 aSig, aLFO1-aLFO2       ; insane panning
+    
     outs (aSigL*aEnv)*ivol, (aSigR*aEnv)*ivol          ; stereo output
 
 
