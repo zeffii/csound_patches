@@ -52,18 +52,19 @@ instr MSequencer
     itriggers[] fillarray 1, 0, 2, 0, 1, 0, 2, 0, 1, 0, 2, 0, 1, 3, 2, 1
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
-    iplen, itrkParams[][], SgroupParams[][] msynth1_pattern_parser gS_pattern_001
+    iplen, itrkParams[][], igroupParams[][] msynth1_pattern_parser gS_pattern_001
 
-    ; kFreq init 1000
+    kFreq = 500
+    kLastFreq = 500
     ; kRes init 0.4
 
     if ktrig == 1 then
         
         k_event_delay = (k_counter % 2 == 0 ? 0 : k_shuffle_max)
 
-        if itriggers[k_counter] > 0 then
-            event "i", "CHHAT", k_event_delay, 1.2, itriggers[k_counter]
-        endif
+        ;if itriggers[k_counter] > 0 then
+        ;    event "i", "CHHAT", k_event_delay, 1.2, itriggers[k_counter]
+        ;endif
 
         if itrigkick[k_counter] > 0 then
             event "i", "KICK_WAV", k_event_delay, .5
@@ -74,20 +75,14 @@ instr MSequencer
         endif
 
         ; - ----------- handle msynth1 ---------------- - ;
-        /*
-        Smsynth_param_freq = SgroupParams[k_counter][4]
-        Smsynth_param_cutoff = SgroupParams[k_counter][5]
-
-        if strcmpk(Smsynth_param_freq, "..") != 0 then
-            kFreq = convert_hex_range("FF", "00", 7000.0, 300.0, Smsynth_param_freq)
-            ;chnset kFreq, "filterfreq"
+        kNewFreq = igroupParams[k_counter][4]
+        if kNewFreq == -90000 then 
+            kFreq = kLastFreq
+        else 
+            kFreq = kNewFreq
+            kLastFreq = kNewFreq
         endif
 
-        if strcmpk(Smsynth_param_cutoff, "..") != 0 then
-            kRes = convert_hex_range("FF", "00", 1.0, 0.3, Smsynth_param_cutoff)
-            ;chnset kFreq, "filterres"
-        endif
-        */
         k_num_tracks_to_handle = 3
         ktrack_num = 0
         krow_index = 0
@@ -95,10 +90,9 @@ instr MSequencer
             krow_index = ktrack_num * 2
 
             if itrkParams[k_counter][krow_index] > 0 then
-
                 k_note = itrkParams[k_counter][krow_index]
                 k_vol = itrkParams[k_counter][krow_index+1]
-                event "i", "CLAVE", k_event_delay, .5, 0.8, k_note, k_vol;, kFreq, kRes
+                event "i", "CLAVE", k_event_delay, .5, 0.8, k_note, k_vol, kFreq;, SgroupParams[k_counter][4];, kRes
             endif
             ktrack_num += 1
         od

@@ -22,6 +22,7 @@ endop
 opcode convert_hex_range, i, SSiiS
 
     S_max, S_min, i_max, i_min, S_val_to_convert xin
+    prints "convert_hex_range input: %s", S_val_to_convert
     i_value hex_to_decimal S_val_to_convert
     i_hex_max hex_to_decimal S_max
     i_hex_min hex_to_decimal S_min
@@ -39,11 +40,26 @@ opcode get_volum, i, S
     xout i_outval
 endop
 
-opcode get_hex, S, S
-    ; some params must give an empty value ".." (use last set value!)
+opcode get_hex, i, iSSiiS
+    ;   ival get_hex 2, 4000, 100, "FF", "00", "3F"
+    iLen, Smax, Smin, imax, imin, S_input_hex xin
+    iOutput init -90000
+
+    if iLen == 2 then
+        S_dots_hex = ".."
+    elseif iLen == 4 then 
+        S_dots_hex = "...."
+    endif 
+
+    if strcmp(S_dots_hex, S_input_hex) != 0 then
+        iOutput = convert_hex_range(Smax, Smin, imax, imin, S_input_hex)
+    endif 
+
+    xout iOutput
 endop
 
-opcode msynth1_pattern_parser, ii[][]S[][], S
+
+opcode msynth1_pattern_parser, ii[][]i[][], S
     /*
 
     pattern parser designed speficially for the following pattern format
@@ -67,7 +83,7 @@ opcode msynth1_pattern_parser, ii[][]S[][], S
 
     iline_count = iLenArray
     iTrackParams[][] init iline_count, 12   ; 2 * 6  = (note, vol) * 6
-    SgroupParams[][] init iline_count, 6    ; n group parameters.
+    igroupParams[][] init iline_count, 6    ; n group parameters.
 
     iCounter = 0
 
@@ -106,13 +122,13 @@ opcode msynth1_pattern_parser, ii[][]S[][], S
         iTrackParams[iCounter][5] = get_volum(S_temp_vol3)  ; note vol
 
         ; filter params
-        SgroupParams[iCounter][4] = S_param_Freq
-        SgroupParams[iCounter][5] = S_param_Cutoff
+        igroupParams[iCounter][4] = get_hex(2, "FF", "00", 12000.0, 300.0, S_param_Freq)
+        igroupParams[iCounter][5] = get_hex(2, "FF", "00", 0.9, 0.2, S_param_Cutoff)
         
         iCounter += 1
     od
 
     ; xout itriggers
-    xout iline_count, iTrackParams, SgroupParams
+    xout iline_count, iTrackParams, igroupParams
 
 endop

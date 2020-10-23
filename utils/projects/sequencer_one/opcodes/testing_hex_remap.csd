@@ -23,10 +23,46 @@ opcode convert_hex_range, i, SSiiS
     xout i_outval
 
 endop
-; here starts
+
+opcode get_hex, i, iSSiiS
+    ;   ival get_hex 2, 4000, 100, "FF", "00", "3F"
+    iLen, Smax, Smin, imax, imin, S_input_hex xin
+    iOutput init -90000
+
+    if iLen == 2 then
+        S_dots_hex = ".."
+    elseif iLen == 4 then 
+        S_dots_hex = "...."
+    endif 
+
+    if strcmp(S_dots_hex, S_input_hex) != 0 then
+        iOutput = convert_hex_range(Smax, Smin, imax, imin, S_input_hex)
+    endif 
+
+    xout iOutput
+endop
+
+
 
 instr 1
-    print convert_hex_range("FF", "00", 1.0, 0.0, "FF")
+    print convert_hex_range("FF", "00", 12000.0, 800.0, "00")
+    print convert_hex_range("FF", "00", 12000.0, 800.0, "22")
+    print convert_hex_range("FF", "00", 12000.0, 800.0, "60")
+    print convert_hex_range("FF", "00", 12000.0, 800.0, "80")
+    print convert_hex_range("FF", "00", 12000.0, 800.0, "FF")
+    prints "----"
+    print get_hex(2, "FF", "00", 12000.0, 800.0, "00")
+    print get_hex(2, "FF", "00", 12000.0, 800.0, "22")
+    print get_hex(2, "FF", "00", 12000.0, 800.0, "60")
+    print get_hex(2, "FF", "00", 12000.0, 800.0, "80")
+    print get_hex(2, "FF", "00", 12000.0, 800.0, "FF")
+    print get_hex(2, "FF", "00", 12000.0, 800.0, "..")
+
+    ival = get_hex(2, "FF", "00", 12000.0, 800.0, "..")
+    if ival == -90000 then
+        prints "yes can be tested"
+
+    endif
 
 endin
 
