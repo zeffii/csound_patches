@@ -22,7 +22,7 @@ endop
 opcode convert_hex_range, i, SSiiS
 
     S_max, S_min, i_max, i_min, S_val_to_convert xin
-    prints "convert_hex_range input: %s", S_val_to_convert
+    ; prints "convert_hex_range input: %s", S_val_to_convert
     i_value hex_to_decimal S_val_to_convert
     i_hex_max hex_to_decimal S_max
     i_hex_min hex_to_decimal S_min
@@ -34,9 +34,11 @@ endop
 
 opcode get_volum, i, S
     S_vol_chars xin
-    ; must ensure .. is handled.
-    ; i_outval convert_hex_range, "FF", "00", 1.0, 0.0, S_vol_chars
-    i_outval = 0.2
+    if strcmp(S_vol_chars, "..") == 0 then
+        S_vol_chars = "80"
+    endif
+    i_outval = convert_hex_range("FF", "00", 1.0, 0.0, S_vol_chars)
+
     xout i_outval
 endop
 
@@ -128,7 +130,6 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         iCounter += 1
     od
 
-    ; xout itriggers
     xout iline_count, iTrackParams, igroupParams
 
 endop
