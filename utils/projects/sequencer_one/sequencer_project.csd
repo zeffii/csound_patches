@@ -92,7 +92,7 @@ instr MSequencer
             if itrkParams[k_counter][krow_index] > 0 then
                 k_note = itrkParams[k_counter][krow_index]
                 k_vol = itrkParams[k_counter][krow_index+1]
-                event "i", "NEW_SYNTH", k_event_delay, .5, 0.8, k_note, k_vol, kFreq
+                event "i", "NEW_SYNTH", k_event_delay, .5, 0.6, k_note, k_vol, kFreq
             endif
             ktrack_num += 1
         od
