@@ -1,4 +1,27 @@
+instr NEW_SYNTH
 
+    iFreq   mtof p5
+    ivol    = p6
+    kcf     = p7
+    ires init 0.4
+
+    aEnv    expon 1, p4, 0.001     ; amplitude envelope (percussive)
+    aNoise  pinker                 ; pink noise
+    aSig    oscil ivol, iFreq, 1      ; sine oscillator
+    ; ---overtones
+    aSig_ot1    oscil ivol/2, iFreq*2, 1      ; sine oscillator
+
+
+    aSig += aSig_ot1
+
+    aSig    moogvcf   aSig, kcf, ires
+
+    ;aSigL, aSigR pan2 aSig, aLFO1-aLFO2       ; insane panning
+    
+    outs (aSig*aEnv)*ivol, (aSig*aEnv)*ivol          ; stereo output
+
+
+endin
 
 instr CLAVE
 
@@ -32,3 +55,4 @@ instr CLAVE
 
 
 endin
+

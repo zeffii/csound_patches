@@ -23,7 +23,7 @@ gS_pattern_001 = {{
 00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  AA 80
 01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-03  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  70 50
+03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  .. .. .. ..  70 50
 04  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 05  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  90 80
@@ -92,7 +92,7 @@ instr MSequencer
             if itrkParams[k_counter][krow_index] > 0 then
                 k_note = itrkParams[k_counter][krow_index]
                 k_vol = itrkParams[k_counter][krow_index+1]
-                event "i", "CLAVE", k_event_delay, .5, 0.8, k_note, k_vol, kFreq
+                event "i", "NEW_SYNTH", k_event_delay, .5, 0.8, k_note, k_vol, kFreq
             endif
             ktrack_num += 1
         od
@@ -118,7 +118,8 @@ endin
 
 </CsInstruments>
 <CsScore>
-t 0 120
+f1  0   16384   10  1 0.5 0.3 0.25 0.2 0.167 0.14 0.125 .111   ; Sawtooth 2^14
+
 i "MSequencer" 0 12
 
 </CsScore>
