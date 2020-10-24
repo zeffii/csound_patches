@@ -88,62 +88,39 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
     igroupParams[][] init iline_count, 6    ; n group parameters.
 
     iCounter = 0
+    i_token = 0
+
+    /* 
+    [4 7] [8 10], [11 14] [15 17], [18 21] [22 24], [25 28] [29 31], [32 35] [36 38], [39 42] [43 45]
+    */
 
     while iCounter < iLenArray do
 
-        ; hardcoding sucks donkeys, it's too early to optimize.
-        ;                                                 paramwidth    index
-        S_temp_note1    strsub S_rows[iCounter], 4, 7     ;3            0
-        S_temp_vol1     strsub S_rows[iCounter], 8, 10    ;2            1
-        S_temp_note2    strsub S_rows[iCounter], 11, 14   ;3            2
-        S_temp_vol2     strsub S_rows[iCounter], 15, 17   ;2            3
-        S_temp_note3    strsub S_rows[iCounter], 18, 21   ;3            4
-        S_temp_vol3     strsub S_rows[iCounter], 22, 24   ;2            5
-        S_temp_note4    strsub S_rows[iCounter], 25, 28   ;3            6
-        S_temp_vol4     strsub S_rows[iCounter], 29, 31   ;2            7
-        S_temp_note5    strsub S_rows[iCounter], 32, 35   ;3            8
-        S_temp_vol5     strsub S_rows[iCounter], 36, 38   ;2            9
-        S_temp_note6    strsub S_rows[iCounter], 39, 42   ;3            10
-        S_temp_vol6     strsub S_rows[iCounter], 43, 45   ;2            11
+        i_track_counter = 0
+        while i_track_counter < 6 do
+
+            ; i token is used to point at the indices that represent that start and end of the substrings.
+            ; indexed above.
+            i_token = 4 + i_track_counter * 7
+
+            S_temp_note    strsub S_rows[iCounter], i_token, i_token+3    ;3
+            S_temp_vol     strsub S_rows[iCounter], i_token+4, i_token+6  ;2
+            iTrackParams[iCounter][i_track_counter*2    ] = get_note(S_temp_note)
+            iTrackParams[iCounter][i_track_counter*2 + 1] = get_volum(S_temp_vol)
+            i_track_counter += 1
+        od
+
         /*
-        ; -----
+        ; ------- filter params ------
         i_param_a       strsub S_rows[iCounter], 47, 49   ;2            0
         i_param_d       strsub S_rows[iCounter], 50, 52   ;2            1
         i_param_s       strsub S_rows[iCounter], 53, 55   ;2            2
         i_param_r       strsub S_rows[iCounter], 56, 58   ;2            3
-        ; ----
+        ; ------- filter main  ------
         */
+
         S_param_Freq    strsub S_rows[iCounter], 60, 62   ;2            4
         S_param_Cutoff  strsub S_rows[iCounter], 63, 65   ;2            5
-
-        /* 
-            packing data into track params.
-
-                i_track_counter = 0
-                while i_track_counter < 6 do
-
-                    i_token = 4 + i_track_counter * 7
-                    prints "[%d %d],[%d %d]\n", i_token, i_token+3, i_token+4, i_token+6
-
-                    i_track_counter += 1
-                od
-                        
-        */
-
-        iTrackParams[iCounter][0] = get_note(S_temp_note1)  ; midi note
-        iTrackParams[iCounter][1] = get_volum(S_temp_vol1)  ; note vol
-        iTrackParams[iCounter][2] = get_note(S_temp_note2)  ; midi note
-        iTrackParams[iCounter][3] = get_volum(S_temp_vol2)  ; note vol
-        iTrackParams[iCounter][4] = get_note(S_temp_note3)  ; midi note
-        iTrackParams[iCounter][5] = get_volum(S_temp_vol3)  ; note vol
-        iTrackParams[iCounter][6] = get_note(S_temp_note4)  ; midi note
-        iTrackParams[iCounter][7] = get_volum(S_temp_vol4)  ; note vol
-        iTrackParams[iCounter][8] = get_note(S_temp_note5)  ; midi note
-        iTrackParams[iCounter][9] = get_volum(S_temp_vol5)  ; note vol
-        iTrackParams[iCounter][10] = get_note(S_temp_note6)  ; midi note
-        iTrackParams[iCounter][11] = get_volum(S_temp_vol6)  ; note vol
-
-        ; filter params
         igroupParams[iCounter][4] = get_hex(2, "FF", "00", 12000.0, 300.0, S_param_Freq)
         igroupParams[iCounter][5] = get_hex(2, "FF", "00", 0.9, 0.2, S_param_Cutoff)
         
