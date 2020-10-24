@@ -15,7 +15,8 @@ instr NEW_SYNTH
     aSig += (aSig_ot1 + aSig_ot2)
 
     ; --- filters
-    aSig    moogvcf   aSig, kcf, ires
+    ; aSig    moogvcf   aSig, kcf, ires
+    aSig moogladder aSig, kcf, ires
 
     ;iAtt = 0.01
     ;iDec = 0.2
