@@ -38,6 +38,20 @@ gS_pattern_001 = {{
 15  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 }}
 
+opcode tick_modulo, k, ki
+
+    /*
+    this opcode will increment the k_counter each time it is triggered (on a tick)
+    when k_counter advances beyond the pattern length, k_counter is rese to 0
+    */
+
+    k_counter, i_length xin
+    k_counter += 1
+    if k_counter > (i_length-1) then
+        k_counter = 0
+    endif
+    xout k_counter
+endop
 
 
 instr MSequencer
@@ -98,18 +112,8 @@ instr MSequencer
         od
 
         ; end handle msynth1
-
-        k_counter += 1
-        k2_counter +=1
-
-        /*  reset the counter to keep the numbers lower */
-        if k_counter > 15 then
-            k_counter = 0
-        endif
-
-        if k2_counter > 31 then
-            k2_counter = 0
-        endif
+        k_counter tick_modulo, k_counter, 16
+        k2_counter tick_modulo, k2_counter, 32
 
     endif
 
@@ -121,7 +125,7 @@ endin
 t 250
 f1  0   16384   10  1 0.5 0.3 0.25 0.2 0.167 0.14 0.125 .111   ; Sawtooth 2^14
 
-i "MSequencer" 0 2
+i "MSequencer" 0 4
 
 </CsScore>
 </CsoundSynthesizer>

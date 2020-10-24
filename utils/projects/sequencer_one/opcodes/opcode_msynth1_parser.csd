@@ -122,7 +122,7 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         S_param_Freq    strsub S_rows[iCounter], 60, 62   ;2            4
         S_param_Cutoff  strsub S_rows[iCounter], 63, 65   ;2            5
         igroupParams[iCounter][4] = get_hex(2, "FF", "00", 12000.0, 300.0, S_param_Freq)
-        igroupParams[iCounter][5] = get_hex(2, "FF", "00", 0.9, 0.2, S_param_Cutoff)
+        igroupParams[iCounter][5] = get_hex(2, "FF", "00", 0.99, 0.0, S_param_Cutoff)
         
         iCounter += 1
     od
