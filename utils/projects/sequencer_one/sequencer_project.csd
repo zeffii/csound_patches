@@ -23,11 +23,11 @@ gS_pattern_001 = {{
 00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  AA 80
 01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-03  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  70 50
-04  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
+03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  .. .. .. ..  70 50
+04  ... .. ... .. ... .. C-3 80 ... .. ... ..  .. .. .. ..  4E ..
 05  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  90 80
-07  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
+07  ... .. ... .. ... .. C-3 30 ... .. ... ..  .. .. .. ..  90 ..
 08  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 09  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  40 30
 10  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
@@ -38,6 +38,20 @@ gS_pattern_001 = {{
 15  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 }}
 
+opcode tick_modulo, k, ki
+
+    /*
+    this opcode will increment the k_counter each time it is triggered (on a tick)
+    when k_counter advances beyond the pattern length, k_counter is rese to 0
+    */
+
+    k_counter, i_length xin
+    k_counter += 1
+    if k_counter > (i_length-1) then
+        k_counter = 0
+    endif
+    xout k_counter
+endop
 
 
 instr MSequencer
@@ -55,16 +69,16 @@ instr MSequencer
     iplen, itrkParams[][], igroupParams[][] msynth1_pattern_parser gS_pattern_001
 
     kFreq = 500
-    kLastFreq = 500
+    kLastFreq = kFreq
     ; kRes init 0.4
 
     if ktrig == 1 then
         
         k_event_delay = (k_counter % 2 == 0 ? 0 : k_shuffle_max)
 
-        ;if itriggers[k_counter] > 0 then
-        ;    event "i", "CHHAT", k_event_delay, 1.2, itriggers[k_counter]
-        ;endif
+        if itriggers[k_counter] > 0 then
+            event "i", "CHHAT", k_event_delay, 1.2, itriggers[k_counter]
+        endif
 
         if itrigkick[k_counter] > 0 then
             event "i", "KICK_WAV", k_event_delay, .5
@@ -83,7 +97,7 @@ instr MSequencer
             kLastFreq = kNewFreq
         endif
 
-        k_num_tracks_to_handle = 3
+        k_num_tracks_to_handle = 6
         ktrack_num = 0
         krow_index = 0
         while ktrack_num < k_num_tracks_to_handle do 
@@ -92,24 +106,14 @@ instr MSequencer
             if itrkParams[k_counter][krow_index] > 0 then
                 k_note = itrkParams[k_counter][krow_index]
                 k_vol = itrkParams[k_counter][krow_index+1]
-                event "i", "CLAVE", k_event_delay, .5, 0.8, k_note, k_vol, kFreq;, SgroupParams[k_counter][4];, kRes
+                event "i", "NEW_SYNTH", k_event_delay, .5, 0.6, k_note, k_vol, kFreq
             endif
             ktrack_num += 1
         od
 
         ; end handle msynth1
-
-        k_counter += 1
-        k2_counter +=1
-
-        /*  reset the counter to keep the numbers lower */
-        if k_counter > 15 then
-            k_counter = 0
-        endif
-
-        if k2_counter > 31 then
-            k2_counter = 0
-        endif
+        k_counter tick_modulo, k_counter, 16
+        k2_counter tick_modulo, k2_counter, 32
 
     endif
 
@@ -118,8 +122,10 @@ endin
 
 </CsInstruments>
 <CsScore>
-t 0 120
-i "MSequencer" 0 12
+t 250
+f1  0   16384   10  1 0.5 0.3 0.25 0.2 0.167 0.14 0.125 .111   ; Sawtooth 2^14
+
+i "MSequencer" 0 4
 
 </CsScore>
 </CsoundSynthesizer>
