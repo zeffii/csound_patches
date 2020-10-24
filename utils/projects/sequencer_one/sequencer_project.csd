@@ -24,10 +24,10 @@ gS_pattern_001 = {{
 01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  .. .. .. ..  70 50
-04  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
+04  ... .. ... .. ... .. C-3 80 ... .. ... ..  .. .. .. ..  4E ..
 05  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  90 80
-07  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
+07  ... .. ... .. ... .. C-3 30 ... .. ... ..  .. .. .. ..  90 ..
 08  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 09  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  40 30
 10  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
@@ -55,7 +55,7 @@ instr MSequencer
     iplen, itrkParams[][], igroupParams[][] msynth1_pattern_parser gS_pattern_001
 
     kFreq = 500
-    kLastFreq = 500
+    kLastFreq = kFreq
     ; kRes init 0.4
 
     if ktrig == 1 then
@@ -83,7 +83,7 @@ instr MSequencer
             kLastFreq = kNewFreq
         endif
 
-        k_num_tracks_to_handle = 3
+        k_num_tracks_to_handle = 6
         ktrack_num = 0
         krow_index = 0
         while ktrack_num < k_num_tracks_to_handle do 
@@ -118,9 +118,10 @@ endin
 
 </CsInstruments>
 <CsScore>
+t 250
 f1  0   16384   10  1 0.5 0.3 0.25 0.2 0.167 0.14 0.125 .111   ; Sawtooth 2^14
 
-i "MSequencer" 0 12
+i "MSequencer" 0 2
 
 </CsScore>
 </CsoundSynthesizer>

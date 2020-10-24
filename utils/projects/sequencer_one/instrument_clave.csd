@@ -9,13 +9,19 @@ instr NEW_SYNTH
     aNoise  pinker                 ; pink noise
     aSig    oscil ivol, iFreq, 1   ; oscillator
     ; ---overtones
-    aSig_ot1    oscil ivol/3, iFreq*2, 1      ; 1 overtone - oscillator
-    aSig_ot2    oscil ivol/6, iFreq*3, 1      ; 2 overtone - oscillator
+    aSig_ot1    oscil ivol/6, iFreq*2, 1      ; 1 overtone - oscillator
+    aSig_ot2    oscil ivol/8, iFreq*3, 1      ; 2 overtone - oscillator
 
     aSig += (aSig_ot1 + aSig_ot2)
 
     ; --- filters
     aSig    moogvcf   aSig, kcf, ires
+
+    ;iAtt = 0.01
+    ;iDec = 0.2
+    ;iSus = 0.6
+    ;iRel = 0.1
+    ;kEnv madsr iAtt, iDec, iSus, iRel     
 
     ;aSigL, aSigR pan2 aSig, aLFO1-aLFO2       ; insane panning
     
