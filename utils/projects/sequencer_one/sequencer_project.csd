@@ -42,7 +42,7 @@ opcode tick_modulo, k, ki
 
     /*
     this opcode will increment the k_counter each time it is triggered (on a tick)
-    when k_counter advances beyond the pattern length, k_counter is rese to 0
+    when k_counter advances beyond the pattern length, k_counter is reset to 0
     */
 
     k_counter, i_length xin
@@ -111,7 +111,7 @@ instr MSequencer
             ktrack_num += 1
         od
 
-        ; end handle msynth1
+        ; ---- handle tick counters and resetting ------------ ;
         k_counter tick_modulo, k_counter, 16
         k2_counter tick_modulo, k2_counter, 32
 

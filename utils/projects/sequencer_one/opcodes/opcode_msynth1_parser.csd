@@ -99,8 +99,7 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         i_track_counter = 0
         while i_track_counter < 6 do
 
-            ; i token is used to point at the indices that represent that start and end of the substrings.
-            ; indexed above.
+            ; i_token points at the indices representing start and end of the substrings (indexed above)
             i_token = 4 + i_track_counter * 7
 
             S_temp_note    strsub S_rows[iCounter], i_token, i_token+3    ;3
