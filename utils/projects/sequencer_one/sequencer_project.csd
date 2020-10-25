@@ -24,10 +24,10 @@ gS_pattern_001 = {{
 01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  .. .. .. ..  70 50
-04  ... .. ... .. ... .. C-3 80 ... .. ... ..  .. .. .. ..  4E ..
+04  ... .. ... .. ... .. C-2 A0 ... .. ... ..  .. .. .. ..  EE AA
 05  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  90 80
-07  ... .. ... .. ... .. C-3 30 ... .. ... ..  .. .. .. ..  90 ..
+07  ... .. ... .. ... .. C-2 A0 ... .. ... ..  .. .. .. ..  E0 AA
 08  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 09  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  40 30
 10  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
@@ -53,6 +53,24 @@ opcode tick_modulo, k, ki
     xout k_counter
 endop
 
+opcode trigger_percussion, 0, i[]i[]kkk
+    itriggers[], itrigkick[], k_counter, k_event_delay, k_shuffle_max xin
+
+    if itriggers[k_counter] > 0 then
+        event "i", "CHHAT", k_event_delay, 1.2, itriggers[k_counter]
+    endif
+
+    if itrigkick[k_counter] > 0 then
+        event "i", "KICK_WAV", k_event_delay, .5
+    endif
+
+    if k_counter % 8 == 4 then
+        event "i", "CLAP", k_event_delay, .40
+    endif
+
+
+endop
+
 
 instr MSequencer
     
@@ -63,7 +81,7 @@ instr MSequencer
     k_event_delay init 0
     k_shuffle_max = 0.017
 
-    itriggers[] fillarray 1, 0, 2, 0, 1, 0, 2, 0, 1, 0, 2, 0, 1, 3, 2, 1
+    itriggers[] fillarray 1, 0, 2, 0, 1, 0, 2, 0, 1, 0, 2, 0, 1, 1, 2, 3
     itrigkick[] fillarray 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0, 0
 
     iplen, itrkParams[][], igroupParams[][] msynth1_pattern_parser gS_pattern_001
@@ -76,17 +94,8 @@ instr MSequencer
         
         k_event_delay = (k_counter % 2 == 0 ? 0 : k_shuffle_max)
 
-        if itriggers[k_counter] > 0 then
-            event "i", "CHHAT", k_event_delay, 1.2, itriggers[k_counter]
-        endif
+        trigger_percussion itriggers, itrigkick, k_counter, k_event_delay, k_shuffle_max
 
-        if itrigkick[k_counter] > 0 then
-            event "i", "KICK_WAV", k_event_delay, .5
-        endif
-
-        if k2_counter % 8 == 4 then
-            event "i", "CLAP", k_event_delay, .40
-        endif
 
         ; - ----------- handle msynth1 ---------------- - ;
         kNewFreq = igroupParams[k_counter][4]
@@ -96,6 +105,8 @@ instr MSequencer
             kFreq = kNewFreq
             kLastFreq = kNewFreq
         endif
+
+        ; chnset kFreq, "msynth_filter_freq"
 
         k_num_tracks_to_handle = 6
         ktrack_num = 0
