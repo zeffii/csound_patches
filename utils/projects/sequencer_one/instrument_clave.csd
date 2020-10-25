@@ -2,15 +2,14 @@ instr NEW_SYNTH
 
     iFreq   mtof p5
     ivol    = p6
-    
     kcf     = p7
-    ;  chnget "msynth_filter_freq"
+    kres    = p8
     
-    ires init 0.4
+    ; ires init 0.4
 
-    aEnv    expon 1, p4, 0.001     ; amplitude envelope (percussive)
-    aNoise  pinker                 ; pink noise
-    aSig    oscil ivol, iFreq, 1   ; oscillator
+    aEnv        expon 1, p4, 0.001     ; amplitude envelope (percussive)
+    aNoise      pinker                 ; pink noise
+    aSig        oscil ivol, iFreq, 1   ; oscillator
     ; ---overtones
     aSig_ot1    oscil ivol/16, iFreq*2, 1      ; 1 overtone - oscillator
     aSig_ot2    oscil ivol/18, iFreq*3, 1      ; 2 overtone - oscillator
@@ -19,7 +18,8 @@ instr NEW_SYNTH
 
     ; --- filters
     ; aSig    moogvcf   aSig, kcf, ires
-    aSig moogladder aSig, kcf, ires
+    aSig += (aNoise / 3)
+    aSig moogladder aSig, kcf, kres
 
     ;iAtt = 0.01
     ;iDec = 0.2

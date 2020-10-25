@@ -20,7 +20,7 @@ ksmps = 32
 
 
 gS_pattern_001 = {{
-00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  AA 80
+00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 80 20  AA 80
 01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  .. .. .. ..  70 50
@@ -88,7 +88,7 @@ instr MSequencer
 
     kFreq = 500
     kLastFreq = kFreq
-    ; kRes init 0.4
+    kRes = 0.4
 
     if ktrig == 1 then
         
@@ -106,8 +106,6 @@ instr MSequencer
             kLastFreq = kNewFreq
         endif
 
-        ; chnset kFreq, "msynth_filter_freq"
-
         k_num_tracks_to_handle = 6
         ktrack_num = 0
         krow_index = 0
@@ -117,7 +115,7 @@ instr MSequencer
             if itrkParams[k_counter][krow_index] > 0 then
                 k_note = itrkParams[k_counter][krow_index]
                 k_vol = itrkParams[k_counter][krow_index+1]
-                event "i", "NEW_SYNTH", k_event_delay, .5, 0.6, k_note, k_vol, kFreq
+                event "i", "NEW_SYNTH", k_event_delay, .5, 0.6, k_note, k_vol, kFreq, kRes
             endif
             ktrack_num += 1
         od

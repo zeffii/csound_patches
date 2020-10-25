@@ -61,6 +61,16 @@ opcode get_hex, i, iSSiiS
 endop
 
 
+opcode get_hex_easy, i, SiiSSii
+    
+    S_row, idx_start, idx_end, Shex_max, Shex_min, imax, imin xin
+    S_param       strsub    S_row, idx_start, idx_end
+    ioutval = get_hex(idx_end-idx_start, Shex_max, Shex_min, imax, imin, S_param)
+    xout ioutval
+endop
+
+
+
 opcode msynth1_pattern_parser, ii[][]i[][], S
     /*
 
@@ -109,19 +119,25 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
             i_track_counter += 1
         od
 
-        /*
-        ; ------- filter params ------
-        i_param_a       strsub S_rows[iCounter], 47, 49   ;2            0
-        i_param_d       strsub S_rows[iCounter], 50, 52   ;2            1
-        i_param_s       strsub S_rows[iCounter], 53, 55   ;2            2
-        i_param_r       strsub S_rows[iCounter], 56, 58   ;2            3
-        ; ------- filter main  ------
-        */
+        
+        ; ------- adsr params ------
+        S_param_a       strsub S_rows[iCounter], 47, 49   ;2            0
+        S_param_d       strsub S_rows[iCounter], 50, 52   ;2            1
+        S_param_s       strsub S_rows[iCounter], 53, 55   ;2            2
+        S_param_r       strsub S_rows[iCounter], 56, 58   ;2            3
+        igroupParams[iCounter][0] = get_hex(2, "FF", "00", 10.0, 0.01, S_param_a)
+        igroupParams[iCounter][1] = get_hex(2, "FF", "00", 10.0, 0.01, S_param_d)
+        igroupParams[iCounter][2] = get_hex(2, "FF", "00", 1.00, 0.0,  S_param_s)
+        igroupParams[iCounter][3] = get_hex(2, "FF", "00", 20.0, 0.01, S_param_r)
 
-        S_param_Freq    strsub S_rows[iCounter], 60, 62   ;2            4
-        S_param_Cutoff  strsub S_rows[iCounter], 63, 65   ;2            5
-        igroupParams[iCounter][4] = get_hex(2, "FF", "00", 12000.0, 300.0, S_param_Freq)
-        igroupParams[iCounter][5] = get_hex(2, "FF", "00", 0.99, 0.0, S_param_Cutoff)
+        ; ------- filter main  ------
+        igroupParams[iCounter][4] = get_hex_easy(S_rows[iCounter], 60, 62, "FF", "00", 12000.0, 300.0)
+        igroupParams[iCounter][5] = get_hex_easy(S_rows[iCounter], 63, 65, "FF", "00", 0.99,    0.0)
+
+        ;S_param_Freq    strsub S_rows[iCounter], 60, 62   ;2            4
+        ;S_param_Cutoff  strsub S_rows[iCounter], 63, 65   ;2            5
+        ;igroupParams[iCounter][4] = get_hex(2, "FF", "00", 12000.0, 300.0, S_param_Freq)
+        ;igroupParams[iCounter][5] = get_hex(2, "FF", "00", 0.99, 0.0, S_param_Cutoff)
         
         iCounter += 1
     od
