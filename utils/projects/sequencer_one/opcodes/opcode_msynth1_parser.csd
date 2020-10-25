@@ -106,14 +106,16 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
 
     while iCounter < iLenArray do
 
+        S_row = S_rows[iCounter]
+
         i_track_counter = 0
         while i_track_counter < 6 do
 
             ; i_token points at the indices representing start and end of the substrings (indexed above)
             i_token = 4 + i_track_counter * 7
 
-            S_temp_note    strsub S_rows[iCounter], i_token, i_token+3    ;3
-            S_temp_vol     strsub S_rows[iCounter], i_token+4, i_token+6  ;2
+            S_temp_note    strsub S_row, i_token, i_token+3    ;3
+            S_temp_vol     strsub S_row, i_token+4, i_token+6  ;2
             iTrackParams[iCounter][i_track_counter*2    ] = get_note(S_temp_note)
             iTrackParams[iCounter][i_track_counter*2 + 1] = get_volum(S_temp_vol)
             i_track_counter += 1
@@ -131,13 +133,9 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         igroupParams[iCounter][3] = get_hex(2, "FF", "00", 20.0, 0.01, S_param_r)
 
         ; ------- filter main  ------
-        igroupParams[iCounter][4] = get_hex_easy(S_rows[iCounter], 60, 62, "FF", "00", 12000.0, 300.0)
-        igroupParams[iCounter][5] = get_hex_easy(S_rows[iCounter], 63, 65, "FF", "00", 0.99,    0.0)
+        igroupParams[iCounter][4] = get_hex_easy(S_row, 60, 62, "FF", "00", 12000.0, 300.0)
+        igroupParams[iCounter][5] = get_hex_easy(S_row, 63, 65, "FF", "00", 0.99,    0.0)
 
-        ;S_param_Freq    strsub S_rows[iCounter], 60, 62   ;2            4
-        ;S_param_Cutoff  strsub S_rows[iCounter], 63, 65   ;2            5
-        ;igroupParams[iCounter][4] = get_hex(2, "FF", "00", 12000.0, 300.0, S_param_Freq)
-        ;igroupParams[iCounter][5] = get_hex(2, "FF", "00", 0.99, 0.0, S_param_Cutoff)
         
         iCounter += 1
     od
