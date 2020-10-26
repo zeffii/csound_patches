@@ -61,6 +61,16 @@ opcode get_hex, i, iSSiiS
 endop
 
 
+opcode get_hex_easy, i, SiiSSii
+    
+    S_row, idx_start, idx_end, Shex_max, Shex_min, imax, imin xin
+    S_param       strsub    S_row, idx_start, idx_end
+    ioutval = get_hex(idx_end-idx_start, Shex_max, Shex_min, imax, imin, S_param)
+    xout ioutval
+endop
+
+
+
 opcode msynth1_pattern_parser, ii[][]i[][], S
     /*
 
@@ -85,7 +95,7 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
 
     iline_count = iLenArray
     iTrackParams[][] init iline_count, 12   ; 2 * 6  = (note, vol) * 6
-    igroupParams[][] init iline_count, 6    ; n group parameters.
+    igroupParams[][] init iline_count, 7    ; n group parameters.
 
     iCounter = 0
     i_token = 0
@@ -96,32 +106,32 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
 
     while iCounter < iLenArray do
 
+        S_row = S_rows[iCounter]
+
         i_track_counter = 0
         while i_track_counter < 6 do
 
             ; i_token points at the indices representing start and end of the substrings (indexed above)
             i_token = 4 + i_track_counter * 7
 
-            S_temp_note    strsub S_rows[iCounter], i_token, i_token+3    ;3
-            S_temp_vol     strsub S_rows[iCounter], i_token+4, i_token+6  ;2
+            S_temp_note    strsub S_row, i_token, i_token+3    ;3
+            S_temp_vol     strsub S_row, i_token+4, i_token+6  ;2
             iTrackParams[iCounter][i_track_counter*2    ] = get_note(S_temp_note)
             iTrackParams[iCounter][i_track_counter*2 + 1] = get_volum(S_temp_vol)
             i_track_counter += 1
         od
+        
+        ; ------- adsr params ------
+        igroupParams[iCounter][0] = get_hex_easy(S_row, 47, 49, "FF", "00", 10.0, 0.01)     ; attack
+        igroupParams[iCounter][1] = get_hex_easy(S_row, 50, 52, "FF", "00", 10.0, 0.01)     ; decay
+        igroupParams[iCounter][2] = get_hex_easy(S_row, 53, 55, "FF", "00", 1.00, 0.0)      ; sustain
+        igroupParams[iCounter][3] = get_hex_easy(S_row, 56, 58, "FF", "00", 20.0, 0.01)     ; release
+        igroupParams[iCounter][4] = get_hex_easy(S_row, 59, 61, "FF", "00", 7.0, 0.001)    ; "Instrument NoteLength
 
-        /*
-        ; ------- filter params ------
-        i_param_a       strsub S_rows[iCounter], 47, 49   ;2            0
-        i_param_d       strsub S_rows[iCounter], 50, 52   ;2            1
-        i_param_s       strsub S_rows[iCounter], 53, 55   ;2            2
-        i_param_r       strsub S_rows[iCounter], 56, 58   ;2            3
         ; ------- filter main  ------
-        */
+        igroupParams[iCounter][5] = get_hex_easy(S_row, 63, 65, "FF", "00", 12000.0, 300.0) ; "Freq"
+        igroupParams[iCounter][6] = get_hex_easy(S_row, 66, 68, "FF", "00", 0.99,    0.0)   ; "Res"
 
-        S_param_Freq    strsub S_rows[iCounter], 60, 62   ;2            4
-        S_param_Cutoff  strsub S_rows[iCounter], 63, 65   ;2            5
-        igroupParams[iCounter][4] = get_hex(2, "FF", "00", 12000.0, 300.0, S_param_Freq)
-        igroupParams[iCounter][5] = get_hex(2, "FF", "00", 0.99, 0.0, S_param_Cutoff)
         
         iCounter += 1
     od
