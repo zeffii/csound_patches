@@ -15,26 +15,27 @@ ksmps = 32
 #include "instrument_clave.csd"
 
 #include ".\\opcodes\\opcode_msynth1_parser.csd"
+#include ".\\opcodes\\opcode_update_param_state.csd"
 
 
 
 
 gS_pattern_001 = {{
-00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 80 20  AA 80
+00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 80 20  2A 80
 01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  .. .. .. ..  70 50
-04  ... .. ... .. ... .. C-2 A0 ... .. ... ..  .. .. .. ..  EE AA
+03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  .. .. .. ..  EA 50
+04  ... .. ... .. ... .. C-2 A0 ... .. ... ..  .. .. .. ..  40 AA
 05  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  90 80
-07  ... .. ... .. ... .. C-2 A0 ... .. ... ..  .. .. .. ..  E0 AA
+06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  50 80
+07  ... .. ... .. ... .. C-2 A0 ... .. ... ..  .. .. .. ..  20 AA
 08  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-09  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  40 30
+09  C-3 80 D#3 80 G-3 80 ... .. ... .. ... ..  .. .. .. ..  30 EA
 10  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 11  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-12  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  80 80
+12  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  40 80
 13  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-14  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  20 BB
+14  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  80 BB
 15  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 }}
 
@@ -72,6 +73,7 @@ opcode trigger_percussion, 0, i[]i[]kkk
 endop
 
 
+
 instr MSequencer
     
     ktrig metro 9.2
@@ -86,9 +88,10 @@ instr MSequencer
 
     iplen, itrkParams[][], igroupParams[][] msynth1_pattern_parser gS_pattern_001
 
-    kFreq = 500
+    kFreq = 1500
     kLastFreq = kFreq
     kRes = 0.4
+    kLastRes = kRes
 
     if ktrig == 1 then
         
@@ -96,15 +99,9 @@ instr MSequencer
 
         trigger_percussion itriggers, itrigkick, k_counter, k_event_delay, k_shuffle_max
 
-
         ; - ----------- handle msynth1 ---------------- - ;
-        kNewFreq = igroupParams[k_counter][4]
-        if kNewFreq == -90000 then 
-            kFreq = kLastFreq
-        else 
-            kFreq = kNewFreq
-            kLastFreq = kNewFreq
-        endif
+        kFreq, kLastFreq  update_param_state  kFreq, kLastFreq, igroupParams[k_counter][4]
+        kRes,  kLastRes   update_param_state  kRes,  kLastRes,  igroupParams[k_counter][5]
 
         k_num_tracks_to_handle = 6
         ktrack_num = 0
