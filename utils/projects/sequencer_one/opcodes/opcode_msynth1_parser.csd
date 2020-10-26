@@ -95,7 +95,7 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
 
     iline_count = iLenArray
     iTrackParams[][] init iline_count, 12   ; 2 * 6  = (note, vol) * 6
-    igroupParams[][] init iline_count, 7    ; n group parameters.
+    igroupParams[][] init iline_count, 8    ; n group parameters.
 
     iCounter = 0
     i_token = 0
@@ -126,11 +126,12 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         igroupParams[iCounter][1] = get_hex_easy(S_row, 50, 52, "FF", "00", 10.0, 0.01)     ; decay
         igroupParams[iCounter][2] = get_hex_easy(S_row, 53, 55, "FF", "00", 1.00, 0.0)      ; sustain
         igroupParams[iCounter][3] = get_hex_easy(S_row, 56, 58, "FF", "00", 20.0, 0.01)     ; release
-        igroupParams[iCounter][4] = get_hex_easy(S_row, 59, 61, "FF", "00", 7.0, 0.001)    ; "Instrument NoteLength
+        igroupParams[iCounter][4] = get_hex_easy(S_row, 59, 61, "FF", "00", 7.0, 0.001)     ; "Instrument NoteLength
 
         ; ------- filter main  ------
         igroupParams[iCounter][5] = get_hex_easy(S_row, 63, 65, "FF", "00", 12000.0, 300.0) ; "Freq"
         igroupParams[iCounter][6] = get_hex_easy(S_row, 66, 68, "FF", "00", 0.99,    0.0)   ; "Res"
+        igroupParams[iCounter][7] = get_hex_easy(S_row, 69, 71, "FF", "00", 1.0,     0.0)   ; "Noise"
 
         
         iCounter += 1

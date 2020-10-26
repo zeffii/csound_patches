@@ -21,7 +21,7 @@ ksmps = 32
 
 
 gS_pattern_001 = {{
-00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 A0 20 10  80 30 ..
+00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 A0 20 10  80 30 50
 01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
 02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
 03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  00 10 80 02 ..  A0 30 ..
@@ -105,6 +105,7 @@ instr MSequencer
         
         update_param_globalstate igroupParams[k_counter][5], "gkMsynthFreq"
         update_param_globalstate igroupParams[k_counter][6], "gkMsynthRes"
+        update_param_globalstate igroupParams[k_counter][7], "gkMsynthNoise"
 
         k_num_tracks_to_handle = 6
         ktrack_num = 0
@@ -117,7 +118,7 @@ instr MSequencer
                 k_vol = itrkParams[k_counter][krow_index+1]
                 ;                                       +-----note duration (istrument duration)
                 ;                                       |    +----- p4
-                ;                                       |    |                     +---p5  +--p6
+                ;                                       |    |                    +---p5  +--p6
                 event "i", "NEW_SYNTH", k_event_delay, .7,  gkMsynthNoteDuration, k_note, k_vol
             endif
             ktrack_num += 1

@@ -7,6 +7,7 @@ gkMsynthNoteDuration init 0.6
 
 gkMsynthFreq     init 1300
 gkMsynthRes      init 0.4
+gkMsynthNoise    init 0.1
 
 
 opcode update_param_globalstate, 0, kS
@@ -33,6 +34,9 @@ opcode update_param_globalstate, 0, kS
             gkMsynthRelease = kNewVal                                    
         elseif strcmp(SparamName, "gkMsynthNoteDuration") == 0 then
             gkMsynthNoteDuration = kNewVal
+        elseif strcmp(SparamName, "gkMsynthNoise") == 0 then
+            gkMsynthNoise = kNewVal
+
         endif
 
     endif
@@ -45,10 +49,10 @@ instr NEW_SYNTH
     
     iNoteDuration =    p4
     iFreq         mtof p5
-    ivol          = p6
+    ivol          =    p6
 
-    kcf           = gkMsynthFreq
-    kres          = gkMsynthRes
+    kcf           =    gkMsynthFreq
+    kres          =    gkMsynthRes
 
     aEnv        expon 1, p4, 0.001     ; amplitude envelope (percussive)
     aNoise      pinker                 ; pink noise
@@ -60,7 +64,7 @@ instr NEW_SYNTH
     aSig += (aSig_ot1 + aSig_ot2)
 
     ; --- filters
-    aSig += (aNoise / 3)
+    aSig += (aNoise * gkMsynthNoise)
     aSig moogladder aSig, kcf, kres
     ; aEnv madsr i(gkMsynthAttack), i(gkMsynthDecay), i(gkMsynthSustain), i(gkMsynthRelease)
 
