@@ -21,11 +21,13 @@ instr NEW_SYNTH
     aSig += (aNoise / 3)
     aSig moogladder aSig, kcf, kres
 
-    ;iAtt = 0.01
-    ;iDec = 0.2
-    ;iSus = 0.6
-    ;iRel = 0.1
-    ;kEnv madsr iAtt, iDec, iSus, iRel     
+
+    ;iAtt  chnget "msynth attack"
+    ;iDec  chnget "msynth decay"
+    ;iSus  chnget "msynth sustain"
+    ;iRel  chnget "msynth release"
+
+    ;aEnv madsr iAtt, iDec, iSus, iRel     
 
     ;aSigL, aSigR pan2 aSig, aLFO1-aLFO2       ; insane panning
     

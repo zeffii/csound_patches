@@ -24,18 +24,18 @@ gS_pattern_001 = {{
 00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 80 20  2A 80
 01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  .. .. .. ..  EA 50
-04  ... .. ... .. ... .. C-2 A0 ... .. ... ..  .. .. .. ..  40 AA
+03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  00 10 80 02  EA 50
+04  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 10 80 02  40 AA
 05  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  A0 80
-07  ... .. ... .. ... .. C-2 A0 ... .. ... ..  .. .. .. ..  AA AA
+06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02  A0 80
+07  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 10 80 02  AA AA
 08  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-09  C-3 80 D#3 80 G-3 80 ... .. ... .. ... ..  .. .. .. ..  .. EA
+09  C-3 80 D#3 80 G-3 80 ... .. ... .. ... ..  00 10 80 02  .. EA
 10  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 11  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-12  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  .. 80
+12  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02  .. 80
 13  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-14  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  .. .. .. ..  .. BB
+14  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02  .. BB
 15  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
 }}
 
@@ -88,11 +88,18 @@ instr MSequencer
 
     iplen, itrkParams[][], igroupParams[][] msynth1_pattern_parser gS_pattern_001
 
+    ;kAttack = 0.002
+    ;kDecay = 0.002
+    ;kSustain = 0.6
+    ;kRelease = 0.001
     kFreq = 800
-    kLastFreq = kFreq
     kRes = 0.4
+    ;kLastAttack = kAttack
+    ;kLastDecay = kDecay
+    ;kLastSustain = kSustain
+    ;kLastRelease = kRelease
+    kLastFreq = kFreq
     kLastRes = kRes
-
 
     if ktrig == 1 then
         
@@ -101,8 +108,17 @@ instr MSequencer
         trigger_percussion itriggers, itrigkick, k_counter, k_event_delay, k_shuffle_max
 
         ; - ----------- handle msynth1 ---------------- - ;
+        ;kAttack,   kLastAttack   update_param_state  kAttack,  kLastAttack,  igroupParams[k_counter][0]
+        ;kDecay,    kLastDecay    update_param_state  kDecay,   kLastDecay,   igroupParams[k_counter][1]
+        ;kSustain,  kLastSustain  update_param_state  kSustain, kLastSustain, igroupParams[k_counter][2]
+        ;kRelease,  kLastRelease  update_param_state  kRelease, kLastRelease, igroupParams[k_counter][3]
         kFreq, kLastFreq  update_param_state  kFreq, kLastFreq, igroupParams[k_counter][4]
         kRes,  kLastRes   update_param_state  kRes,  kLastRes,  igroupParams[k_counter][5]
+
+        ;chnset kAttack,  "msynth attack"
+        ;chnset kDecay,   "msynth decay"
+        ;chnset kSustain, "msynth sustain"
+        ;chnset kRelease, "msynth release"
 
         k_num_tracks_to_handle = 6
         ktrack_num = 0
@@ -113,7 +129,7 @@ instr MSequencer
             if itrkParams[k_counter][krow_index] > 0 then
                 k_note = itrkParams[k_counter][krow_index]
                 k_vol = itrkParams[k_counter][krow_index+1]
-                event "i", "NEW_SYNTH", k_event_delay, .5, 0.6, k_note, k_vol, kFreq, kRes
+                event "i", "NEW_SYNTH", k_event_delay, .71, 0.6, k_note, k_vol, kFreq, kRes
             endif
             ktrack_num += 1
         od
