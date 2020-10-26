@@ -21,22 +21,22 @@ ksmps = 32
 
 
 gS_pattern_001 = {{
-00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 80 20  80 30
-01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  00 10 80 02  A0 30
-04  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 10 80 02  A0 30
-05  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02  20 A0
-07  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 10 80 02  20 A0
-08  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-09  C-3 80 D#3 80 G-3 80 ... .. ... .. ... ..  00 10 80 02  .. ..
-10  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-11  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-12  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02  .. ..
-13  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
-14  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02  .. ..
-15  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. ..  .. ..
+00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 A0 20 10  80 30 ..
+01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
+02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
+03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  00 10 80 02 ..  A0 30 ..
+04  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 10 80 02 40  A0 30 ..
+05  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
+06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02 ..  20 A0 ..
+07  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 10 80 02 20  20 A0 ..
+08  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
+09  C-3 80 D#3 80 G-3 80 ... .. ... .. ... ..  00 10 80 02 ..  69 A0 ..
+10  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
+11  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
+12  C-4 80 D-4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02 30  .. .. ..
+13  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
+14  C-5 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02 80  30 A0 ..
+15  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
 }}
 
 opcode tick_modulo, k, ki
@@ -77,7 +77,8 @@ endop
 
 instr MSequencer
     
-    ktrig metro 9.2
+    iSpeed = p4
+    ktrig metro iSpeed
 
     k_counter init 0
     k2_counter init 0
@@ -96,17 +97,14 @@ instr MSequencer
         trigger_percussion itriggers, itrigkick, k_counter, k_event_delay, k_shuffle_max
 
         ; - ----------- handle msynth1 ---------------- - ;
-        ;kAttack,   kLastAttack   update_param_state  kAttack,  kLastAttack,  igroupParams[k_counter][0]
-        ;kDecay,    kLastDecay    update_param_state  kDecay,   kLastDecay,   igroupParams[k_counter][1]
-        ;kSustain,  kLastSustain  update_param_state  kSustain, kLastSustain, igroupParams[k_counter][2]
-        ;kRelease,  kLastRelease  update_param_state  kRelease, kLastRelease, igroupParams[k_counter][3]
-        update_param_globalstate igroupParams[k_counter][4], "gkMsynthFreq"
-        update_param_globalstate igroupParams[k_counter][5], "gkMsynthRes"
-
-        ;chnset kAttack,  "msynth attack"
-        ;chnset kDecay,   "msynth decay"
-        ;chnset kSustain, "msynth sustain"
-        ;chnset kRelease, "msynth release"
+        update_param_globalstate igroupParams[k_counter][0], "gkMsynthAttack"
+        update_param_globalstate igroupParams[k_counter][1], "gkMsynthDecay"
+        update_param_globalstate igroupParams[k_counter][2], "gkMsynthSustain"
+        update_param_globalstate igroupParams[k_counter][3], "gkMsynthRelease"
+        update_param_globalstate igroupParams[k_counter][4], "gkMsynthNoteDuration"
+        
+        update_param_globalstate igroupParams[k_counter][5], "gkMsynthFreq"
+        update_param_globalstate igroupParams[k_counter][6], "gkMsynthRes"
 
         k_num_tracks_to_handle = 6
         ktrack_num = 0
@@ -117,7 +115,10 @@ instr MSequencer
             if itrkParams[k_counter][krow_index] > 0 then
                 k_note = itrkParams[k_counter][krow_index]
                 k_vol = itrkParams[k_counter][krow_index+1]
-                event "i", "NEW_SYNTH", k_event_delay, .71, 0.6, k_note, k_vol;, kFreq, kRes
+                ;                                       +-----note duration (istrument duration)
+                ;                                       |    +----- p4
+                ;                                       |    |                     +---p5  +--p6
+                event "i", "NEW_SYNTH", k_event_delay, .7,  gkMsynthNoteDuration, k_note, k_vol
             endif
             ktrack_num += 1
         od
@@ -136,7 +137,7 @@ endin
 t 250
 f1  0   16384   10  1 0.5 0.3 0.25 0.2 0.167 0.14 0.125 .111   ; Sawtooth 2^14
 
-i "MSequencer" 0 4
+i "MSequencer" 0 4 9.4
 
 </CsScore>
 </CsoundSynthesizer>
