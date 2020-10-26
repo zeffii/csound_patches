@@ -72,6 +72,8 @@ opcode trigger_percussion, 0, i[]i[]kkk
 
 endop
 
+gkMsynthFreq = 1300
+gkMsynthRes = 0.4
 
 
 instr MSequencer
