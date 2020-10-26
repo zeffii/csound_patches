@@ -1,9 +1,34 @@
+gkMsynthFreq = 1300
+gkMsynthRes = 0.4
+
+opcode update_param_globalstate, 0, kS
+
+    ; usage
+    ;   update_param_globalstate( igroupParams[k_counter][4], "gkParamName")
+
+    kNewVal, SparamName xin
+
+    ; kNewFreq = igroupParams[k_counter][4]
+    if kNewVal != -90000 then 
+
+        if strcmp(SparamName, "gkMsynthFreq") == 0 then
+            gkMsynthFreq = kNewVal
+        elseif strcmp(SparamName, "gkMsynthRes") == 0 then
+            gkMsynthRes = kNewVal
+        endif
+
+    endif
+
+endop
+
+
 instr NEW_SYNTH
 
     iFreq   mtof p5
     ivol    = p6
-    kcf     = p7
-    kres    = p8
+    
+    kcf     = gkMsynthFreq
+    kres    = gkMsynthRes
     
     ; ires init 0.4
 
