@@ -89,8 +89,6 @@ endin
 
 instr MSequencer
 
-    ; event "i" "InitMsynthParameters" 0 .1
-    
     iSpeed = p4
     ktrig metro iSpeed
 
