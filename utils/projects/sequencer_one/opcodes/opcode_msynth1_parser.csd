@@ -122,11 +122,11 @@ opcode msynth1_pattern_parser, ii[][]i[][], S
         od
         
         ; ------- adsr params ------
-        igroupParams[iCounter][0] = get_hex_easy(S_row, 47, 49, "FF", "00", 10.0, 0.01)     ; attack
-        igroupParams[iCounter][1] = get_hex_easy(S_row, 50, 52, "FF", "00", 10.0, 0.01)     ; decay
+        igroupParams[iCounter][0] = get_hex_easy(S_row, 47, 49, "FF", "00", 1.0, 0.01)     ; attack
+        igroupParams[iCounter][1] = get_hex_easy(S_row, 50, 52, "FF", "00", 1.0, 0.01)     ; decay
         igroupParams[iCounter][2] = get_hex_easy(S_row, 53, 55, "FF", "00", 1.00, 0.0)      ; sustain
-        igroupParams[iCounter][3] = get_hex_easy(S_row, 56, 58, "FF", "00", 20.0, 0.01)     ; release
-        igroupParams[iCounter][4] = get_hex_easy(S_row, 59, 61, "FF", "00", 7.0, 0.001)     ; "Instrument NoteLength
+        igroupParams[iCounter][3] = get_hex_easy(S_row, 56, 58, "FF", "00", 1.0, 0.01)     ; release
+        igroupParams[iCounter][4] = get_hex_easy(S_row, 59, 61, "FF", "00", 2.0, 0.001)     ; "Instrument NoteLength
 
         ; ------- filter main  ------
         igroupParams[iCounter][5] = get_hex_easy(S_row, 63, 65, "FF", "00", 12000.0, 300.0) ; "Freq"
