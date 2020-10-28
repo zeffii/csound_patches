@@ -9,14 +9,14 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
+#include ".\\opcodes\\opcode_tick_handler.csd"
+
 #include "instrument_kick.csd"
 #include "instrument_hhat.csd"
 #include "instrument_clap.csd"
 #include "instrument_clave.csd"
 
 #include ".\\opcodes\\opcode_msynth1_parser.csd"
-; #include ".\\opcodes\\opcode_update_param_state.csd"
-
 
 
 
@@ -39,20 +39,7 @@ gS_pattern_001 = {{
 15  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
 }}
 
-opcode tick_modulo, k, ki
 
-    /*
-    this opcode will increment the k_counter each time it is triggered (on a tick)
-    when k_counter advances beyond the pattern length, k_counter is reset to 0
-    */
-
-    k_counter, i_length xin
-    k_counter += 1
-    if k_counter > (i_length-1) then
-        k_counter = 0
-    endif
-    xout k_counter
-endop
 
 opcode trigger_percussion, 0, i[]i[]kkk
     itriggers[], itrigkick[], k_counter, k_event_delay, k_shuffle_max xin
