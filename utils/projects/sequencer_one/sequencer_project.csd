@@ -9,50 +9,37 @@ nchnls = 2
 ksmps = 32
 0dbfs = 1
 
+#include ".\\opcodes\\opcode_tick_handler.csd"
+
 #include "instrument_kick.csd"
 #include "instrument_hhat.csd"
 #include "instrument_clap.csd"
 #include "instrument_clave.csd"
 
 #include ".\\opcodes\\opcode_msynth1_parser.csd"
-; #include ".\\opcodes\\opcode_update_param_state.csd"
-
 
 
 
 gS_pattern_001 = {{
-00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 A0 20 10  80 30 E0
+00  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 20 A0 02 53  20 E0 10
 01  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
 02  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
-03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  00 10 80 02 ..  A0 30 ..
-04  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 10 80 02 40  A0 30 ..
+03  C-4 50 D#4 50 G-4 50 ... .. ... .. ... ..  00 50 20 02 ..  30 A0 ..
+04  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 30 20 62 23  50 A0 ..
 05  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
-06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02 ..  20 A0 ..
-07  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 10 80 02 20  20 A0 ..
+06  C-4 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 60 20 02 A0  20 30 ..
+07  ... .. ... .. ... .. C-2 A0 ... .. ... ..  00 20 20 02 ..  20 A0 ..
 08  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
-09  C-3 80 D#3 80 G-3 80 ... .. ... .. ... ..  00 10 80 02 ..  29 A0 ..
+09  C-3 80 D#3 80 G-3 80 ... .. ... .. ... ..  00 60 20 02 ..  29 A0 ..
 10  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
 11  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
-12  C-4 80 D-4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02 30  .. .. ..
+12  C-4 80 D-4 80 G-4 80 ... .. ... .. ... ..  30 A0 90 42 A0  20 .. ..
 13  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
-14  C-5 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 80 02 80  30 A0 ..
+14  C-5 80 D#4 80 G-4 80 ... .. ... .. ... ..  00 10 20 02 ..  20 A0 ..
 15  ... .. ... .. ... .. ... .. ... .. ... ..  .. .. .. .. ..  .. .. ..
 }}
 
-opcode tick_modulo, k, ki
 
-    /*
-    this opcode will increment the k_counter each time it is triggered (on a tick)
-    when k_counter advances beyond the pattern length, k_counter is reset to 0
-    */
-
-    k_counter, i_length xin
-    k_counter += 1
-    if k_counter > (i_length-1) then
-        k_counter = 0
-    endif
-    xout k_counter
-endop
 
 opcode trigger_percussion, 0, i[]i[]kkk
     itriggers[], itrigkick[], k_counter, k_event_delay, k_shuffle_max xin
@@ -72,20 +59,9 @@ opcode trigger_percussion, 0, i[]i[]kkk
 
 endop
 
+gSMsynthParams[] fillarray "gkMsynthAttack", "gkMsynthDecay", "gkMsynthSustain",\
+         "gkMsynthRelease", "gkMsynthNoteDuration", "gkMsynthFreq", "gkMsynthRes", "gkMsynthNoise"
 
-instr InitMsynthParameters
-
-    chnset 0.0, "gkMsynthAttack"
-    chnset 0.2, "gkMsynthDecay"
-    chnset 0.8, "gkMsynthSustain"
-    chnset 0.1, "gkMsynthRelease"
-    chnset 0.6, "gkMsynthNoteDuration"
-
-    chnset 1300, "gkMsynthFreq"
-    chnset 0.4, "gkMsynthRes"
-    chnset 0.1, "gkMsynthNoise"
-
-endin
 
 instr MSequencer
 
@@ -109,15 +85,11 @@ instr MSequencer
         trigger_percussion itriggers, itrigkick, k_counter, k_event_delay, k_shuffle_max
 
         ; - ----------- handle msynth1 ---------------- - ;
-        update_param_globalstate igroupParams[k_counter][0], "gkMsynthAttack"
-        update_param_globalstate igroupParams[k_counter][1], "gkMsynthDecay"
-        update_param_globalstate igroupParams[k_counter][2], "gkMsynthSustain"
-        update_param_globalstate igroupParams[k_counter][3], "gkMsynthRelease"
-        update_param_globalstate igroupParams[k_counter][4], "gkMsynthNoteDuration"
-        
-        update_param_globalstate igroupParams[k_counter][5], "gkMsynthFreq"
-        update_param_globalstate igroupParams[k_counter][6], "gkMsynthRes"
-        update_param_globalstate igroupParams[k_counter][7], "gkMsynthNoise"
+        kparam_num = 0
+        while kparam_num < lenarray(gSMsynthParams) do
+            update_param_globalstate igroupParams[k_counter][kparam_num], gSMsynthParams[kparam_num]
+            kparam_num += 1
+        od
 
         k_num_tracks_to_handle = 6
         ktrack_num = 0
