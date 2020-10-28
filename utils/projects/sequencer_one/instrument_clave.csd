@@ -47,13 +47,12 @@ instr NEW_SYNTH
     aNoise        pinker                 ; pink noise
     aSig          oscil ivol, iFreq, 1   ; oscillator
     ; ---         overtones
-        aSig_ot1  oscil ivol/16, iFreq*2, 1      ; 1 overtone - oscillator
-        aSig_ot2  oscil ivol/18, iFreq*3, 1      ; 2 overtone - oscillator
-
-    aSig += (aSig_ot1 + aSig_ot2)
+    aSig_ot1      oscil ivol/16, iFreq*2, 1      ; 1 overtone - oscillator
+    aSig_ot2      oscil ivol/18, iFreq*3, 1      ; 2 overtone - oscillator
+    aSig          +=    (aSig_ot1 + aSig_ot2)
 
     ; ---    filters
-    aSig += (aNoise * knoise)
+    aSig          +=    (aNoise * knoise)
     aSig     moogladder aSig, kcf, kres
     aEnv     madsr      i_attack, i_decay, i_sustain, i_release
 
