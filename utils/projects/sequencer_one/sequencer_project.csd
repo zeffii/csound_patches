@@ -72,6 +72,9 @@ opcode trigger_percussion, 0, i[]i[]kkk
 
 endop
 
+gSMsynthParams[] fillarray "gkMsynthAttack", "gkMsynthDecay", "gkMsynthSustain",\
+         "gkMsynthRelease", "gkMsynthNoteDuration", "gkMsynthFreq", "gkMsynthRes", "gkMsynthNoise"
+
 
 instr MSequencer
 
@@ -95,15 +98,11 @@ instr MSequencer
         trigger_percussion itriggers, itrigkick, k_counter, k_event_delay, k_shuffle_max
 
         ; - ----------- handle msynth1 ---------------- - ;
-        update_param_globalstate igroupParams[k_counter][0], "gkMsynthAttack"
-        update_param_globalstate igroupParams[k_counter][1], "gkMsynthDecay"
-        update_param_globalstate igroupParams[k_counter][2], "gkMsynthSustain"
-        update_param_globalstate igroupParams[k_counter][3], "gkMsynthRelease"
-        update_param_globalstate igroupParams[k_counter][4], "gkMsynthNoteDuration"
-        
-        update_param_globalstate igroupParams[k_counter][5], "gkMsynthFreq"
-        update_param_globalstate igroupParams[k_counter][6], "gkMsynthRes"
-        update_param_globalstate igroupParams[k_counter][7], "gkMsynthNoise"
+        kparam_num = 0
+        while kparam_num < lenarray(gSMsynthParams) do
+            update_param_globalstate igroupParams[k_counter][kparam_num], gSMsynthParams[kparam_num]
+            kparam_num += 1
+        od
 
         k_num_tracks_to_handle = 6
         ktrack_num = 0
