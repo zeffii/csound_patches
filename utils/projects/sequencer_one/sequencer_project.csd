@@ -73,20 +73,6 @@ opcode trigger_percussion, 0, i[]i[]kkk
 endop
 
 
-instr InitMsynthParameters
-
-    chnset 0.0, "gkMsynthAttack"
-    chnset 0.2, "gkMsynthDecay"
-    chnset 0.8, "gkMsynthSustain"
-    chnset 0.1, "gkMsynthRelease"
-    chnset 0.6, "gkMsynthNoteDuration"
-
-    chnset 1300, "gkMsynthFreq"
-    chnset 0.4, "gkMsynthRes"
-    chnset 0.1, "gkMsynthNoise"
-
-endin
-
 instr MSequencer
 
     iSpeed = p4
